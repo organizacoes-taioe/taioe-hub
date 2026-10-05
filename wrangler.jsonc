@@ -1,0 +1,10 @@
+// Worker só com arquivos estáticos. Publica todo o taioe.com.br, menos
+// /cards e /biblioteca, que são routes dos outros repositórios (README).
+{
+  "name": "taioe-hub",
+  "compatibility_date": "2026-09-25",
+  "workers_dev": false,
+  "preview_urls": true,
+  "routes": [ { "pattern": "taioe.com.br", "custom_domain": true } ],
+  "assets": { "directory": "./public", "not_found_handling": "404-page", "html_handling": "auto-trailing-slash" }
+}
