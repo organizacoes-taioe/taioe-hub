@@ -27,6 +27,7 @@
       try { perfil = await TaioeHub.lerPerfil(); } catch (e) { /* offline: fica o email */ }
       TaioeHub.$('ola').textContent = 'Olá, ' + (perfil ? perfil.nome : sessao.user.email);
       TaioeHub.mostrar('entrar', false);
+      TaioeHub.mostrar('conta', true);
       TaioeHub.mostrar('logado', true);
     })
     .catch(function () { /* sem SDK, a página continua funcionando com o «Entrar» */ });
