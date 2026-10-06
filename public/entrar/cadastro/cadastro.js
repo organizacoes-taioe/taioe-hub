@@ -51,7 +51,7 @@
       H.avisar('aviso', 'Escreva como quer ser chamado (até 40 letras).', 'erro'); H.$('nome').focus(); return;
     }
     if (!H.$('aceite').checked) {
-      H.avisar('aviso', 'Para usar o Taioé, é preciso aceitar os termos e a política.', 'erro'); return;
+      H.avisar('aviso', 'Para usar a Taioé, é preciso aceitar os termos e a política.', 'erro'); return;
     }
     H.$('salvar').disabled = true;
     H.avisar('aviso', 'Salvando…');

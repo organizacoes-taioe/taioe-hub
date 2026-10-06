@@ -72,7 +72,7 @@
     irAoDestino();
   }
 
-  // "Apagar também os dados deste aparelho": só o que é do Taioé, nunca localStorage.clear().
+  // "Apagar também os dados deste aparelho": só o que é da Taioé, nunca localStorage.clear().
   async function apagarDadosDoAparelho() {
     var prefixos = ['hub:', 'cards:', 'biblioteca:'];
     function nosso(n) { return prefixos.some(function (p) { return n && n.indexOf(p) === 0; }); }
