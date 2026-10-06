@@ -1,4 +1,4 @@
-/* Estilo comum do hub. As cores seguem as do Taioé Cards. Nunito servida pelo próprio site. */
+/* Estilo comum do hub. As cores seguem as de Taioé Cards. Nunito servida pelo próprio site. */
 @font-face { font-family: "Nunito"; font-weight: 400; font-display: swap; src: url("./fontes/nunito-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Nunito"; font-weight: 600; font-display: swap; src: url("./fontes/nunito-latin-600-normal.woff2") format("woff2"); }
 @font-face { font-family: "Nunito"; font-weight: 700; font-display: swap; src: url("./fontes/nunito-latin-700-normal.woff2") format("woff2"); }
