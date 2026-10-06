@@ -7,29 +7,24 @@
 <meta name="description" content="Taioé: cards para aprender línguas e uma biblioteca de clássicos em português, abertos a todos.">
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
-<body>
-<header class="topo">
-  <a class="marca" href="/">Taioé</a>
-  <nav>
-    <a id="entrar" href="/entrar/">Entrar</a>
-    <span id="logado" hidden><span id="ola"></span> · <a href="/conta/">Minha conta</a></span>
+<body class="inicio">
+<main class="porta">
+  <h1 class="nome">Taioé</h1>
+  <p class="lema">Cards para aprender línguas e uma biblioteca de clássicos em português.</p>
+
+  <nav class="caminhos" aria-label="Aplicativos da Taioé">
+    <a class="caminho" href="/cards/">
+      <span class="caminho-nome">Taioé Cards</span>
+      <span class="caminho-texto">Espanhol e inglês, com repetição espaçada</span>
+    </a>
+    <a class="caminho" href="/biblioteca/">
+      <span class="caminho-nome">Biblioteca Taioé</span>
+      <span class="caminho-texto">Clássicos em português, abertos a todos</span>
+    </a>
+    <a class="caminho discreto" id="entrar" href="/entrar/">Entrar</a>
+    <a class="caminho discreto" id="conta" href="/conta/" hidden>Minha conta</a>
   </nav>
-</header>
-
-<main>
-  <h1>Taioé</h1>
-  <p class="apagado">Cards para aprender línguas e uma biblioteca de clássicos em português.</p>
-
-  <div class="apps">
-    <a class="app" href="/cards/">
-      <strong>Taioé Cards</strong>
-      <span>Espanhol e inglês com repetição espaçada. Precisa entrar com seu email.</span>
-    </a>
-    <a class="app" href="/biblioteca/">
-      <strong>Biblioteca Taioé</strong>
-      <span>Clássicos em português, abertos a todos. Entre só se quiser guardar a leitura em qualquer aparelho.</span>
-    </a>
-  </div>
+  <p class="ola" id="logado" hidden><span id="ola"></span></p>
 </main>
 
 <footer class="rodape">

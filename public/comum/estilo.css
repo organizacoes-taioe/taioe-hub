@@ -147,3 +147,25 @@ button:disabled { opacity: .55; cursor: default; }
   justify-content: center;
 }
 .rodape a { color: var(--apagado); }
+
+/* ---- Página inicial: própria, simples, um caminho embaixo do outro ---- */
+body.inicio main.porta { max-width: 440px; text-align: center; padding: clamp(48px, 14vh, 140px) 24px 48px; }
+body.inicio .nome {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-weight: 400; font-size: clamp(3rem, 13vw, 4.4rem); letter-spacing: .02em; line-height: 1; margin: 0 0 .35em;
+}
+body.inicio .lema { color: var(--apagado); margin: 0 auto 2.6rem; max-width: 22rem; }
+.caminhos { display: flex; flex-direction: column; gap: 12px; }
+.caminho {
+  display: block; text-decoration: none; color: var(--texto);
+  border: 1px solid var(--borda); border-radius: 12px; padding: 15px 20px;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.caminho:hover { border-color: var(--acento); background: var(--acento-fraco); }
+.caminho-nome { display: block; font-weight: 700; font-size: 1.1rem; }
+.caminho-texto { display: block; color: var(--apagado); font-size: .9rem; margin-top: 2px; }
+.caminho.discreto { border-color: transparent; color: var(--acento); font-weight: 700; padding: 10px 20px; }
+.caminho.discreto:hover { border-color: var(--borda); background: transparent; }
+.caminho[hidden] { display: none; }
+body.inicio .ola { color: var(--apagado); margin: 1.2rem 0 0; font-size: .95rem; }
+body.inicio .rodape { justify-content: center; border-top: 0; }
