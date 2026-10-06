@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://taioe.com.br/biblioteca/sitemap.xml

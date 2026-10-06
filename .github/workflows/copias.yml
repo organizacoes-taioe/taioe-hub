@@ -1,0 +1,24 @@
+# Confere que o supabase-js e o módulo de sessão são exatamente os do README do taioe-hub
+# (contrato da origem, item 6). Ao atualizar, mude os valores aqui e nos outros dois repositórios.
+name: Cópias
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: sha256 das cópias
+        run: |
+          echo "59d39487c3589843b410322d8a3d562ce022aba1e5ccb16898ef3fb2a0da2ecd  public/comum/vendor/supabase-js-2.117.2.js" > esperado.txt
+          echo "f5e6246142d41d3bff5e7c8b08e82284690f3a492169593b938a6347788cc8e3  public/comum/taioe-sessao.js" >> esperado.txt
+          sha256sum -c esperado.txt
+      - name: destinoSeguro contra fugas da origem
+        run: node ferramentas/teste-destino.mjs

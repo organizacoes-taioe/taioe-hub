@@ -1,0 +1,149 @@
+/* Estilo comum do hub. As cores seguem as do Taioé Cards. Nunito servida pelo próprio site. */
+@font-face { font-family: "Nunito"; font-weight: 400; font-display: swap; src: url("./fontes/nunito-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Nunito"; font-weight: 600; font-display: swap; src: url("./fontes/nunito-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Nunito"; font-weight: 700; font-display: swap; src: url("./fontes/nunito-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Nunito"; font-weight: 800; font-display: swap; src: url("./fontes/nunito-latin-800-normal.woff2") format("woff2"); }
+
+:root {
+  color-scheme: dark;
+  --fundo: #0d1614;
+  --caixa: #14211e;
+  --borda: #25352f;
+  --texto: #e4ebe8;
+  --apagado: #9db0a9;
+  --acento: #e8b93f;
+  --acento-texto: #1a1405;
+  --acento-fraco: rgba(232, 185, 63, .13);
+  --ok: #4dd4a0;
+  --erro: #f0796f;
+  --erro-fraco: rgba(240, 121, 111, .10);
+  --raio: 15px;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --fundo: #f6f3ea;
+    --caixa: #ffffff;
+    --borda: #ddd5c2;
+    --texto: #1d2422;
+    --apagado: #5c6864;
+    --acento: #a8780c;
+    --acento-texto: #ffffff;
+    --acento-fraco: rgba(168, 120, 12, .10);
+    --ok: #137a52;
+    --erro: #b3362b;
+    --erro-fraco: rgba(179, 54, 43, .08);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 400 17px/1.55 "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: var(--acento); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--borda);
+}
+.marca { font-weight: 800; font-size: 1.25rem; color: var(--texto); text-decoration: none; letter-spacing: .01em; }
+.topo nav { display: flex; align-items: center; gap: 14px; font-size: .95rem; }
+.topo nav a { text-decoration: none; }
+
+main { flex: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: 32px 20px 48px; }
+main.largo { max-width: 860px; }
+h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 12px; font-weight: 800; }
+h2 { font-size: 1.2rem; margin: 28px 0 8px; font-weight: 700; }
+p { margin: 0 0 14px; }
+.apagado { color: var(--apagado); }
+.pequeno { font-size: .9rem; }
+
+.caixa {
+  background: var(--caixa);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 22px;
+  margin: 18px 0;
+}
+
+.apps { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 24px; }
+.app {
+  display: block;
+  background: var(--caixa);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 22px;
+  color: var(--texto);
+  text-decoration: none;
+}
+.app:hover { border-color: var(--acento); }
+.app strong { display: block; font-size: 1.2rem; margin-bottom: 6px; }
+.app span { color: var(--apagado); font-size: .95rem; }
+
+label { display: block; font-weight: 700; margin: 0 0 6px; }
+input[type="email"], input[type="text"] {
+  width: 100%;
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+input.codigo { font-size: 1.6rem; letter-spacing: .35em; text-align: center; font-variant-numeric: tabular-nums; }
+.marcar { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; margin: 16px 0; }
+.marcar input { margin-top: 5px; width: 18px; height: 18px; flex: none; }
+
+button, .botao {
+  display: inline-block;
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin: 14px 8px 0 0;
+  background: var(--acento);
+  color: var(--acento-texto);
+  cursor: pointer;
+  text-decoration: none;
+}
+button.secundario, .botao.secundario { background: transparent; color: var(--acento); border: 1px solid var(--borda); }
+button.perigo { background: var(--erro); color: #fff; }
+button:disabled { opacity: .55; cursor: default; }
+.ligacao { background: none; border: 0; padding: 0; margin: 0; color: var(--acento); font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+.aviso { border-radius: 10px; padding: 12px 14px; margin: 14px 0; background: var(--acento-fraco); }
+.aviso.erro { background: var(--erro-fraco); color: var(--erro); }
+.aviso.ok { color: var(--ok); }
+.aviso:empty { display: none; }
+[hidden] { display: none !important; }
+
+#turnstile { margin-top: 14px; min-height: 0; }
+
+.texto-legal h2 { margin-top: 32px; }
+.texto-legal li { margin-bottom: 6px; }
+.rascunho { border: 2px dashed var(--erro); color: var(--erro); border-radius: 10px; padding: 10px 14px; font-weight: 700; }
+
+.rodape {
+  border-top: 1px solid var(--borda);
+  padding: 18px 20px;
+  font-size: .9rem;
+  color: var(--apagado);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: center;
+}
+.rodape a { color: var(--apagado); }

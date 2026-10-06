@@ -29,6 +29,23 @@ Os três sites dividem a mesma origem (`https://taioe.com.br`). Cada repositóri
 7. **Routes:** depois de todo deploy que mexer em `wrangler.jsonc`, e uma vez por mês, confira que existem **exatamente duas**: `taioe.com.br/cards*` → `taioe-cards` e `taioe.com.br/biblioteca*` → `taioe-biblioteca`.
 8. **Administração:** não existe tela de administração no site.
 
+## Arquivos comuns (cópias idênticas nos três repositórios)
+
+| arquivo | sha256 |
+|---|---|
+| `public/comum/vendor/supabase-js-2.117.2.js` (UMD do npm, integridade conferida) | `59d39487c3589843b410322d8a3d562ce022aba1e5ccb16898ef3fb2a0da2ecd` |
+| `public/comum/taioe-sessao.js` (contrato v1) | `f5e6246142d41d3bff5e7c8b08e82284690f3a492169593b938a6347788cc8e3` |
+
+Nos apps, as cópias ficam em `public/<app>/vendor/` e `public/<app>/js/`. O workflow **Cópias** de cada repositório confere estes valores; ao mudar um arquivo, mude o valor aqui e nos três workflows, no mesmo dia.
+
+## Rodar no computador
+
+1. No `taioe-infra`: `supabase start` (o Supabase local, com o Mailpit em http://127.0.0.1:54324).
+2. Na pasta `taioe`: `python hub/ferramentas/servir.py` e abrir http://localhost:8777/.
+3. O código de acesso chega no Mailpit. No localhost, o Turnstile usa a chave de teste oficial, que sempre passa.
+
+Depois de mexer no módulo de sessão: `node hub/ferramentas/teste-destino.mjs`.
+
 ## Deploy
 
 Workers Builds, a cada push na `main`: comando de build vazio, deploy com `npx wrangler deploy`. Nas outras branches, `npx wrangler versions upload`.

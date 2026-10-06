@@ -5,9 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Entrar · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
-<h1>Entrar · Taioé</h1>
-<p>Em construção. (hub, /entrar/)</p>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+</header>
+
+<main>
+  <!-- já logado -->
+  <section id="ja-logado" hidden>
+    <h1>Você já entrou</h1>
+    <p>Conectado como <strong id="ja-email"></strong>.</p>
+    <button type="button" id="continuar">Continuar</button>
+    <button type="button" class="secundario" id="outra-conta">Entrar com outra conta</button>
+  </section>
+
+  <!-- passo 1: email -->
+  <section id="passo-email" hidden>
+    <h1>Entrar</h1>
+    <p class="apagado">Sem senha: mandamos um código para o seu email. Se for a primeira vez, a conta é criada agora.</p>
+    <form id="form-email" novalidate>
+      <label for="email">Seu email</label>
+      <input type="email" id="email" name="email" autocomplete="email" inputmode="email" required>
+      <div id="turnstile"></div>
+      <button type="submit" id="enviar">Receber o código</button>
+    </form>
+    <div id="aviso-email" class="aviso" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- passo 2: código -->
+  <section id="passo-codigo" hidden>
+    <h1>Digite o código</h1>
+    <p>Se o endereço <strong id="para-email"></strong> for válido, ele recebeu um email com um código de 6 dígitos e um botão. Os dois valem por 15 minutos.</p>
+    <form id="form-codigo" novalidate>
+      <label for="codigo">Código</label>
+      <input type="text" id="codigo" class="codigo" inputmode="numeric" autocomplete="one-time-code"
+             pattern="[0-9]{6}" maxlength="6" required>
+      <button type="submit" id="verificar">Entrar</button>
+    </form>
+    <div id="aviso-codigo" class="aviso" role="status" aria-live="polite"></div>
+    <p class="pequeno apagado">Não chegou? Olhe o spam.
+      <button type="button" class="ligacao" id="reenviar" disabled>Reenviar</button>
+      <span id="espera"></span> ·
+      <button type="button" class="ligacao" id="outro-email">Usar outro email</button></p>
+    <p class="pequeno apagado">Abriu o email em outro aparelho? Digite o código aqui. O botão do email entra no aparelho em que ele for aberto.</p>
+  </section>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+  <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+</footer>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/entrar/turnstile.js"></script>
+<script src="/entrar/entrar.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=taioeTurnstilePronto" async defer></script>
 </body>
 </html>

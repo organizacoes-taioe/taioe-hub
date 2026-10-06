@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Entrar neste aparelho · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+</header>
+
+<main>
+  <section id="pronto" hidden>
+    <h1>Entrar neste aparelho</h1>
+    <p id="outra-sessao" class="aviso" hidden>Você está conectado como <strong id="email-atual"></strong>. Continuar vai trocar para a conta do email que você abriu.</p>
+    <button type="button" id="entrar">Entrar neste aparelho</button>
+    <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
+    <p class="pequeno apagado">Pediu o código em outro navegador ou aparelho? Digite lá o código de 6 dígitos do email: este botão entra só onde ele for aberto.</p>
+  </section>
+
+  <section id="sem-token" hidden>
+    <h1>Link incompleto</h1>
+    <p>Este endereço não traz o acesso. Abra de novo o botão do email ou <a href="/entrar/">peça um código novo</a>.</p>
+  </section>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+  <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+</footer>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/entrar/confirmar/confirmar.js"></script>
+</body>
+</html>

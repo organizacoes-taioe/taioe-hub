@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cadastro · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+  <nav><button type="button" class="ligacao" id="sair">Sair</button></nav>
+</header>
+
+<main>
+  <section id="carregando"><p class="apagado">Carregando…</p></section>
+
+  <form id="form" hidden novalidate>
+    <h1 id="titulo">Falta pouco</h1>
+    <p>Conta: <strong id="email"></strong></p>
+    <p id="explica-novo-aceite" class="aviso" hidden>Os termos de uso ou a política de privacidade mudaram. Para continuar, leia e aceite a versão nova.</p>
+
+    <div id="bloco-nome">
+      <label for="nome">Como você quer ser chamado?</label>
+      <input type="text" id="nome" maxlength="40" autocomplete="nickname" required>
+      <p class="pequeno apagado">Só para o Taioé falar com você. Pode ser um apelido.</p>
+    </div>
+
+    <label class="marcar"><input type="checkbox" id="aceite" required>
+      <span>Li e aceito os <a id="link-termos" href="/termos/" target="_blank" rel="noopener">termos de uso</a>
+      e a <a id="link-politica" href="/privacidade/" target="_blank" rel="noopener">política de privacidade</a>
+      <span class="apagado pequeno" id="versoes"></span>.</span></label>
+
+    <button type="submit" id="salvar">Continuar</button>
+    <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
+  </form>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+  <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+</footer>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/entrar/cadastro/cadastro.js"></script>
+</body>
+</html>
