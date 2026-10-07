@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Política de privacidade · Taioé</title>
+<title data-i18n="legal.privacidade">Política de privacidade · Taioé</title>
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
@@ -12,6 +12,8 @@
 </header>
 
 <main class="largo texto-legal">
+  <p class="aviso fora-do-pt" data-i18n="legal.aviso">Este documento está em português, a língua da versão oficial. Uma tradução virá em breve.</p>
+  <div lang="pt-BR">
   <h1>Política de privacidade</h1>
   <p class="apagado">Vale para todo o site taioe.com.br: a página inicial, Taioé Cards e a Biblioteca Taioé. Versão de 6 de outubro de 2026.</p>
 
@@ -87,13 +89,23 @@
 
   <h2>11. Mudanças nesta política</h2>
   <p>Mudanças importantes são avisadas por email e no site de 15 a 30 dias antes de valer. Na primeira entrada depois disso, pedimos o seu aceite da versão nova. As versões anteriores ficam publicadas.</p>
+  </div>
 </main>
 
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
-  <a href="/conta/">Meus dados</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
+  <a href="/conta/" data-i18n="comum.meus-dados">Meus dados</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/lingua-perfil.js"></script>
 </body>
 </html>

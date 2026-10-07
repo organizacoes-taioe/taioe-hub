@@ -16,7 +16,7 @@ Os três sites dividem a mesma origem (`https://taioe.com.br`). Cada repositóri
 
 1. **Prefixos:** nenhum caminho do hub começa com `cards` ou `biblioteca`. Cada repositório declara nas routes só o próprio prefixo.
 2. **Sessão:** as chaves `taioe-auth` e `taioe-auth-*` do armazenamento são do módulo de sessão, e ninguém mais as usa.
-3. **Armazenamento:** tudo o que um app grava no navegador leva o prefixo dele (`hub:`, `cards:`, `biblioteca:`), em localStorage, IndexedDB, Cache Storage, BroadcastChannel e Web Locks.
+3. **Armazenamento:** tudo o que um app grava no navegador leva o prefixo dele (`hub:`, `cards:`, `biblioteca:`), em localStorage, IndexedDB, Cache Storage, BroadcastChannel e Web Locks. A única chave comum é `taioe:lingua` (a língua da interface, abaixo); «apagar também os dados deste aparelho» apaga o prefixo `taioe:` junto com os outros.
 4. **Proibido:**
    - `localStorage.clear()`;
    - cookies;
@@ -28,6 +28,18 @@ Os três sites dividem a mesma origem (`https://taioe.com.br`). Cada repositóri
 6. **supabase-js:** a mesma versão nos três repositórios, com o sha256 anotado aqui e conferido pelo CI de cada um.
 7. **Routes:** depois de todo deploy que mexer em `wrangler.jsonc`, e uma vez por mês, confira que existem **exatamente duas**: `taioe.com.br/cards*` → `taioe-cards` e `taioe.com.br/biblioteca*` → `taioe-biblioteca`.
 8. **Administração:** não existe tela de administração no site.
+
+## Línguas da interface
+
+O hub e os Cards têm interface em português, espanhol e inglês; a Biblioteca, só em português. O módulo é `public/comum/i18n.js` (`window.TaioeI18n`: `lingua()`, `definir(l)`, `t(chave, vars)`, `aplicar(raiz)`, `marcar(el, chave, vars, html)`) e os textos ficam em `public/comum/textos-i18n.js`, com as mesmas chaves nas três línguas. Os dois vêm antes de qualquer outro script da página.
+
+- **Qual língua:** `localStorage['taioe:lingua']`, se existir; senão a primeira de `navigator.languages` que comece por `pt`, `es` ou `en`; senão `pt`. A chave é a mesma nos Cards.
+- **Com login:** ao entrar, vale `conta.perfis.lingua_interface` (e ela vai para o localStorage). Trocar no seletor, logado, grava no perfil (`hub.js`; nas páginas sem `hub.js`, `comum/lingua-perfil.js` o carrega só se houver sessão). O cadastro grava a língua em que a pessoa se cadastrou.
+- **No HTML:** `data-i18n`, `data-i18n-html` (só HTML do dicionário; valores de `data-i18n-vars` entram escapados) e `data-i18n-attr="aria-label:chave"`. O texto em português fica escrito no HTML, igual ao do dicionário. Texto que o JS muda usa `marcar()`, para continuar certo quando a língua muda.
+- **Seletor:** `<select data-seletor-lingua>` no rodapé de todas as páginas (menos `/admin/`, só em português) e em Minha conta.
+- **Documentos legais:** ficam em português, dentro de `<div lang="pt-BR">`; em espanhol e inglês aparece no topo um aviso de que a versão oficial é a portuguesa.
+
+Depois de mexer em textos ou telas: `node hub/ferramentas/teste-i18n.mjs` (chaves nas três línguas, nada sem chave, nada inline).
 
 ## Arquivos comuns (cópias idênticas nos três repositórios)
 

@@ -22,3 +22,5 @@ jobs:
           sha256sum -c esperado.txt
       - name: destinoSeguro contra fugas da origem
         run: node ferramentas/teste-destino.mjs
+      - name: textos nas três línguas
+        run: node ferramentas/teste-i18n.mjs

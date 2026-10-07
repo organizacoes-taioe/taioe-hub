@@ -1,8 +1,8 @@
-/* Funções comuns às páginas do hub (não é copiado para os apps). Depende do supabase-js e
-   do taioe-sessao.js. Todo texto vindo do banco entra com textContent, nunca innerHTML. */
+/* Funções comuns às páginas do hub (não é copiado para os apps). Depende do supabase-js, do
+   taioe-sessao.js e do i18n.js. Todo texto vindo do banco entra com textContent, nunca innerHTML. */
 (function () {
   'use strict';
-  var CHAVE_VOLTAR = 'hub:voltar';
+  var CHAVE_VOLTAR = 'hub:voltar', I = TaioeI18n, t = I.t;
 
   function $(id) { return document.getElementById(id); }
 
@@ -25,17 +25,16 @@
     location.replace(TaioeSessao.destinoSeguro(v));
   }
 
-  // Mensagem em português para os erros do Auth e do banco que a pessoa pode encontrar.
+  // Mensagem, na língua da interface, para os erros do Auth e do banco que a pessoa pode encontrar.
   function mensagemDeErro(erro) {
     var m = String((erro && (erro.code || erro.message)) || '');
     var st = erro && erro.status;
-    if (st === 429 || /rate limit|over_email_send_rate_limit|too many/i.test(m))
-      return 'Muitos pedidos seguidos. Espere alguns minutos e tente de novo.';
-    if (/captcha/i.test(m)) return 'A verificação anti-robô falhou. Tente de novo.';
-    if (/otp_expired|expired|invalid|token/i.test(m)) return 'Código errado ou vencido. Confira os 6 dígitos ou peça um novo.';
-    if (/email_address_invalid|invalid.*email/i.test(m)) return 'Esse endereço de email não parece válido.';
-    if (/fetch|network|failed to/i.test(m)) return 'Sem conexão com o servidor. Confira a internet e tente de novo.';
-    return 'Algo deu errado. Tente de novo em instantes.';
+    if (st === 429 || /rate limit|over_email_send_rate_limit|too many/i.test(m)) return t('erro.muitos');
+    if (/captcha/i.test(m)) return t('erro.captcha');
+    if (/otp_expired|expired|invalid|token/i.test(m)) return t('erro.codigo');
+    if (/email_address_invalid|invalid.*email/i.test(m)) return t('erro.email');
+    if (/fetch|network|failed to/i.test(m)) return t('erro.rede');
+    return t('erro.geral');
   }
 
   // A versão vigente de cada documento: a mais recente já publicada.
@@ -54,15 +53,33 @@
 
   async function lerPerfil() {
     var r = await TaioeSessao.cliente().schema('conta').from('perfis')
-      .select('nome, termos_versao, politica_versao, fora_da_calibragem').maybeSingle();
+      .select('nome, termos_versao, politica_versao, fora_da_calibragem, lingua_interface').maybeSingle();
     if (r.error) throw r.error;
     return r.data;
+  }
+
+  // Ao entrar, a língua do perfil vale mais que a deste navegador (e passa a ser a dele).
+  function linguaDoPerfil(perfil) {
+    if (perfil && perfil.lingua_interface && perfil.lingua_interface !== I.lingua()) I.definir(perfil.lingua_interface);
+  }
+
+  // Grava no perfil a língua escolhida no seletor. Sem sessão, ou ainda sem perfil, não faz nada.
+  // Devolve o erro, ou null.
+  async function gravarLingua(lingua) {
+    try {
+      var sessao = await sessaoAtual();
+      if (!sessao) return null;
+      var r = await TaioeSessao.cliente().schema('conta').from('perfis')
+        .update({ lingua_interface: lingua }).eq('usuario_id', sessao.user.id);
+      return r.error || null;
+    } catch (e) { return e; }
   }
 
   // Depois de entrar (pelo código ou pelo link): sem perfil, ou com termos novos, vai ao
   // cadastro; senão registra o acesso e volta para onde a pessoa estava.
   async function depoisDoLogin() {
     var perfil = await lerPerfil(), vig = await documentosVigentes();
+    linguaDoPerfil(perfil);
     if (!perfil || !vig.termos || !vig.politica
         || perfil.termos_versao !== vig.termos.id || perfil.politica_versao !== vig.politica.id) {
       location.replace('/entrar/cadastro/');
@@ -73,8 +90,9 @@
   }
 
   // "Apagar também os dados deste aparelho": só o que é da Taioé, nunca localStorage.clear().
+  // 'taioe:' é a língua (taioe:lingua), comum aos apps; as chaves da sessão são do taioe-sessao.js.
   async function apagarDadosDoAparelho() {
-    var prefixos = ['hub:', 'cards:', 'biblioteca:'];
+    var prefixos = ['hub:', 'cards:', 'biblioteca:', 'taioe:'];
     function nosso(n) { return prefixos.some(function (p) { return n && n.indexOf(p) === 0; }); }
     try {
       for (var i = localStorage.length - 1; i >= 0; i--) {
@@ -103,8 +121,14 @@
     return r.data && r.data.session ? r.data.session : null;
   }
 
-  window.TaioeHub = { $: $, mostrar: mostrar, avisar: avisar, guardarVoltar: guardarVoltar,
+  var hub = window.TaioeHub = { $: $, mostrar: mostrar, avisar: avisar, guardarVoltar: guardarVoltar,
     irAoDestino: irAoDestino, mensagemDeErro: mensagemDeErro, documentosVigentes: documentosVigentes,
     lerPerfil: lerPerfil, depoisDoLogin: depoisDoLogin, apagarDadosDoAparelho: apagarDadosDoAparelho,
-    sessaoAtual: sessaoAtual };
+    sessaoAtual: sessaoAtual, linguaDoPerfil: linguaDoPerfil, gravarLingua: gravarLingua,
+    aoGravarLingua: null };                                // a página pode pôr aqui fn(erro)
+
+  // Trocou a língua no seletor estando logado: grava no perfil também.
+  I.aoEscolher(function (lingua) {
+    gravarLingua(lingua).then(function (erro) { if (hub.aoGravarLingua) hub.aoGravarLingua(erro); });
+  });
 })();

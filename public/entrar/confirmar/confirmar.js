@@ -3,7 +3,7 @@
    token de uso único. Só o clique em «Entrar neste aparelho» confirma. */
 (function () {
   'use strict';
-  var H = TaioeHub;
+  var H = TaioeHub, I = TaioeI18n, t = I.t;
   var frag = new URLSearchParams(location.hash.slice(1));
   var tokenHash = frag.get('token_hash');
   // tira o token da barra de endereço, do histórico e de qualquer cópia do link
@@ -14,7 +14,7 @@
   (async function () {
     var sessao = await H.sessaoAtual();
     if (sessao) {
-      H.$('email-atual').textContent = sessao.user.email;
+      I.marcar('outra-sessao', 'confirmar.outra-sessao', { email: sessao.user.email }, true);
       H.mostrar('outra-sessao', true);
     }
     H.mostrar('pronto', true);
@@ -24,14 +24,14 @@
   H.$('entrar').addEventListener('click', async function () {
     var botao = this;
     botao.disabled = true;
-    H.avisar('aviso', 'Entrando…');
+    H.avisar('aviso', t('confirmar.entrando'));
     try {
       var r = await TaioeSessao.cliente().auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
       if (r.error) {
-        H.avisar('aviso', 'Este botão já foi usado ou venceu (vale 15 minutos e uma vez só). Peça um código novo em Entrar.', 'erro');
+        H.avisar('aviso', t('confirmar.usado'), 'erro');
         return;
       }
-      H.avisar('aviso', 'Você entrou como ' + r.data.user.email + '.', 'ok');
+      H.avisar('aviso', t('confirmar.entrou', { email: r.data.user.email }), 'ok');
       await H.depoisDoLogin();
     } catch (e) {
       H.avisar('aviso', H.mensagemDeErro(e), 'erro');

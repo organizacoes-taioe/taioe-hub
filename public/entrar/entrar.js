@@ -2,7 +2,7 @@
    resposta é a mesma para email novo ou antigo, para ninguém descobrir quem tem conta. */
 (function () {
   'use strict';
-  var H = TaioeHub, sb = TaioeSessao.cliente(), email = '', relogio = null;
+  var H = TaioeHub, I = TaioeI18n, t = I.t, sb = TaioeSessao.cliente(), email = '', relogio = null;
 
   var params = new URLSearchParams(location.search);
   if (params.has('voltar')) H.guardarVoltar(params.get('voltar'));
@@ -19,16 +19,16 @@
     clearInterval(relogio);
     relogio = setInterval(function () {
       restam--;
-      texto.textContent = restam > 0 ? '(em ' + restam + ' s)' : '';
+      I.marcar(texto, restam > 0 ? 'entrar.espera' : null, { n: restam });
       if (restam <= 0) { clearInterval(relogio); botao.disabled = false; }
     }, 1000);
-    texto.textContent = '(em 60 s)';
+    I.marcar(texto, 'entrar.espera', { n: 60 });
   }
 
   async function pedirCodigo(avisoId) {
-    H.avisar(avisoId, 'Verificando que você não é um robô…');
+    H.avisar(avisoId, t('comum.robo'));
     var captchaToken = await TaioeTurnstile.token();
-    H.avisar(avisoId, 'Enviando…');
+    H.avisar(avisoId, t('comum.enviando'));
     var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, captchaToken: captchaToken } });
     TaioeTurnstile.reiniciar();
     if (r.error) { H.avisar(avisoId, H.mensagemDeErro(r.error), 'erro'); return false; }
@@ -40,11 +40,11 @@
     ev.preventDefault();
     var campo = H.$('email');
     email = campo.value.trim().toLowerCase();
-    if (!campo.checkValidity() || !email) { H.avisar('aviso-email', 'Escreva um endereço de email válido.', 'erro'); return; }
+    if (!campo.checkValidity() || !email) { H.avisar('aviso-email', t('comum.email-invalido'), 'erro'); return; }
     H.$('enviar').disabled = true;
     try {
       if (await pedirCodigo('aviso-email')) {
-        H.$('para-email').textContent = email;
+        I.marcar('para-email', 'entrar.codigo-explica', { email: email }, true);
         H.$('codigo').value = '';
         passo('passo-codigo');
         contarParaReenviar();
@@ -55,13 +55,13 @@
   H.$('form-codigo').addEventListener('submit', async function (ev) {
     ev.preventDefault();
     var token = H.$('codigo').value.replace(/\D/g, '');
-    if (token.length !== 6) { H.avisar('aviso-codigo', 'O código tem 6 dígitos.', 'erro'); return; }
+    if (token.length !== 6) { H.avisar('aviso-codigo', t('comum.codigo-6'), 'erro'); return; }
     H.$('verificar').disabled = true;
-    H.avisar('aviso-codigo', 'Conferindo…');
+    H.avisar('aviso-codigo', t('comum.conferindo'));
     try {
       var r = await sb.auth.verifyOtp({ email: email, token: token, type: 'email' });
       if (r.error) { H.avisar('aviso-codigo', H.mensagemDeErro(r.error), 'erro'); return; }
-      H.avisar('aviso-codigo', 'Pronto, você entrou.', 'ok');
+      H.avisar('aviso-codigo', t('entrar.pronto'), 'ok');
       await H.depoisDoLogin();
     } catch (e) {
       H.avisar('aviso-codigo', H.mensagemDeErro(e), 'erro');
@@ -76,7 +76,7 @@
 
   H.$('reenviar').addEventListener('click', async function () {
     if (await pedirCodigo('aviso-codigo')) {
-      H.avisar('aviso-codigo', 'Enviamos um código novo. O anterior deixou de valer.', 'ok');
+      H.avisar('aviso-codigo', t('entrar.codigo-novo'), 'ok');
       contarParaReenviar();
     }
   });
@@ -94,7 +94,7 @@
   (async function () {
     var sessao = await H.sessaoAtual();
     if (sessao) {
-      H.$('ja-email').textContent = sessao.user.email;
+      I.marcar('ja-email', 'entrar.ja-email', { email: sessao.user.email }, true);
       passo('ja-logado');
     } else {
       passo('passo-email');
