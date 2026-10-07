@@ -1,0 +1,29 @@
+/* Estatísticas (só o revisor geral). Usa os tokens de /comum/estilo.css. */
+main.estat { max-width: 1040px; }
+.estat .cabeca h1 { margin-bottom: .2rem; }
+.estat button.link { background: none; border: 0; padding: 0; color: var(--acento); cursor: pointer; font: inherit; text-decoration: underline; }
+.secoes { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 8px; }
+.secoes a { padding: 5px 12px; border: 1px solid var(--borda); border-radius: 999px; color: var(--texto); text-decoration: none; font-size: .9rem; }
+.secoes a:hover { border-color: var(--acento); }
+.bloco { margin: 28px 0; scroll-margin-top: 16px; }
+.bloco > h2 { font-size: 1.3rem; margin: 0 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borda); }
+.bloco h3 { font-size: 1.02rem; margin: 18px 0 8px; }
+.numeros { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.numero { background: var(--caixa); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; }
+.numero b { display: block; font-size: 1.6rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.numero span { color: var(--apagado); font-size: .82rem; }
+.grafico { background: var(--caixa); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; }
+.grafico .barras { display: flex; align-items: flex-end; gap: 2px; height: 120px; }
+.grafico .barra { flex: 1 1 0; min-width: 3px; background: var(--acento); border-radius: 3px 3px 0 0; position: relative; }
+.grafico .barra.zero { background: var(--borda); min-height: 2px; }
+.grafico .eixo { display: flex; justify-content: space-between; color: var(--apagado); font-size: .75rem; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.grafico .titulo { font-size: .85rem; color: var(--apagado); margin: 0 0 8px; }
+.tabela { overflow-x: auto; }
+.tabela table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+.tabela th { text-align: left; color: var(--apagado); font-weight: 500; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--borda); }
+.tabela td { padding: 6px 10px 6px 0; border-bottom: 1px solid var(--borda); vertical-align: top; }
+.tabela td.n, .tabela th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.tabela td.id { font-family: ui-monospace, Consolas, monospace; font-size: .8rem; color: var(--apagado); }
+.duas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.vazio { color: var(--apagado); font-size: .9rem; }
+@media (max-width: 720px) { .duas { grid-template-columns: 1fr; } }
