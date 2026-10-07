@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Página não encontrada · Taioé</title>
+<title data-i18n="p404.titulo">Página não encontrada · Taioé</title>
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
@@ -12,14 +12,23 @@
   <a class="marca" href="/">Taioé</a>
 </header>
 <main>
-  <h1>Página não encontrada</h1>
-  <p>Este endereço não existe na Taioé.</p>
-  <p><a class="botao" href="/">Ir para o início</a></p>
+  <h1 data-i18n="p404.h1">Página não encontrada</h1>
+  <p data-i18n="p404.texto">Este endereço não existe na Taioé.</p>
+  <p><a class="botao" href="/" data-i18n="p404.inicio">Ir para o início</a></p>
 </main>
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/lingua-perfil.js"></script>
 </body>
 </html>

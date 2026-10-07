@@ -15,7 +15,7 @@
     if (!sitekey || !document.getElementById('turnstile')) return;
     idWidget = window.turnstile.render('#turnstile', {
       sitekey: sitekey,
-      language: 'pt-br',
+      language: { pt: 'pt-br', es: 'es', en: 'en' }[TaioeI18n.lingua()] || 'auto',
       appearance: 'interaction-only',
       callback: entregar,
       'expired-callback': function () { atual = null; },

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Termos de uso · Taioé</title>
+<title data-i18n="legal.termos">Termos de uso · Taioé</title>
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
@@ -12,6 +12,8 @@
 </header>
 
 <main class="largo texto-legal">
+  <p class="aviso fora-do-pt" data-i18n="legal.aviso">Este documento está em português, a língua da versão oficial. Uma tradução virá em breve.</p>
+  <div lang="pt-BR">
   <h1>Termos de uso</h1>
   <p class="apagado">Versão de 6 de outubro de 2026.</p>
 
@@ -67,13 +69,23 @@
 
   <h2>12. Contato</h2>
   <p><a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>; assuntos de privacidade: <a href="mailto:privacidade@taioe.com.br">privacidade@taioe.com.br</a>.</p>
+  </div>
 </main>
 
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
-  <a href="/conta/">Meus dados</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
+  <a href="/conta/" data-i18n="comum.meus-dados">Meus dados</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/lingua-perfil.js"></script>
 </body>
 </html>

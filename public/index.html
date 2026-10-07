@@ -4,35 +4,44 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taioé</title>
-<meta name="description" content="Taioé: cards para aprender línguas e uma biblioteca de clássicos em português, abertos a todos.">
+<meta name="description" data-i18n-attr="content:inicio.descricao" content="Taioé: cards para aprender línguas e uma biblioteca de clássicos em português, abertos a todos.">
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body class="inicio">
 <main class="porta">
   <h1 class="nome">Taioé</h1>
-  <p class="lema">Cards para aprender línguas e uma biblioteca de clássicos em português.</p>
+  <p class="lema" data-i18n="inicio.lema">Cards para aprender línguas e uma biblioteca de clássicos em português.</p>
 
-  <nav class="caminhos" aria-label="Aplicativos da Taioé">
+  <nav class="caminhos" aria-label="Aplicativos da Taioé" data-i18n-attr="aria-label:inicio.apps">
     <a class="caminho" href="/cards/">
       <span class="caminho-nome">Taioé Cards</span>
-      <span class="caminho-texto">Espanhol e inglês, com repetição espaçada</span>
+      <span class="caminho-texto" data-i18n="inicio.cards">Espanhol e inglês, com repetição espaçada</span>
     </a>
     <a class="caminho" href="/biblioteca/">
-      <span class="caminho-nome">Biblioteca Taioé</span>
-      <span class="caminho-texto">Clássicos em português, abertos a todos</span>
+      <span class="caminho-nome" data-i18n="inicio.biblioteca-nome">Biblioteca Taioé</span>
+      <span class="caminho-texto" data-i18n="inicio.biblioteca">Clássicos em português, abertos a todos</span>
     </a>
-    <a class="caminho discreto" id="entrar" href="/entrar/">Entrar</a>
-    <a class="caminho discreto" id="conta" href="/conta/" hidden>Minha conta</a>
+    <a class="caminho discreto" id="entrar" href="/entrar/" data-i18n="comum.entrar">Entrar</a>
+    <a class="caminho discreto" id="conta" href="/conta/" hidden data-i18n="comum.minha-conta">Minha conta</a>
   </nav>
   <p class="ola" id="logado" hidden><span id="ola"></span></p>
 </main>
 
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
-  <a href="/conta/">Meus dados</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
+  <a href="/conta/" data-i18n="comum.meus-dados">Meus dados</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/lingua-perfil.js"></script>
 <script src="/inicio.js"></script>
 </body>
 </html>

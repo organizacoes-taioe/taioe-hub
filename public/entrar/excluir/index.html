@@ -4,53 +4,61 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Excluir a conta · Taioé</title>
+<title data-i18n="excluir.titulo">Excluir a conta · Taioé</title>
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
 <header class="topo">
   <a class="marca" href="/">Taioé</a>
-  <nav><a href="/conta/">Minha conta</a></nav>
+  <nav><a href="/conta/" data-i18n="comum.minha-conta">Minha conta</a></nav>
 </header>
 
 <main>
-  <p id="carregando" class="apagado">Carregando…</p>
+  <p id="carregando" class="apagado" data-i18n="comum.carregando">Carregando…</p>
 
   <section id="passo-pedir" hidden>
-    <h1>Excluir a conta</h1>
-    <p>A conta <strong id="email"></strong> e todos os dados dela serão apagados: o nome, o progresso dos cards e as posições de leitura. Não dá para desfazer.</p>
-    <p class="apagado">Se quiser uma cópia antes, <a href="/conta/">baixe seus dados</a>.</p>
-    <p>Para confirmar que é você, mandamos um código para o seu email.</p>
+    <h1 data-i18n="excluir.h1">Excluir a conta</h1>
+    <p id="email" data-i18n-html="excluir.explica">A conta <strong></strong> e todos os dados dela serão apagados: o nome, o progresso dos cards e as posições de leitura. Não dá para desfazer.</p>
+    <p class="apagado" data-i18n-html="excluir.copia">Se quiser uma cópia antes, <a href="/conta/">baixe seus dados</a>.</p>
+    <p data-i18n="excluir.e-voce">Para confirmar que é você, mandamos um código para o seu email.</p>
     <div id="turnstile"></div>
-    <button type="button" id="pedir">Mandar o código</button>
+    <button type="button" id="pedir" data-i18n="excluir.mandar">Mandar o código</button>
     <div id="aviso-pedir" class="aviso" role="status" aria-live="polite"></div>
   </section>
 
   <section id="passo-confirmar" hidden>
-    <h1>Confirmar a exclusão</h1>
+    <h1 data-i18n="excluir.confirmar-h1">Confirmar a exclusão</h1>
     <form id="form-codigo" novalidate>
-      <label for="codigo">Código de 6 dígitos que chegou no seu email</label>
+      <label for="codigo" data-i18n="excluir.codigo">Código de 6 dígitos que chegou no seu email</label>
       <input type="text" id="codigo" class="codigo" inputmode="numeric" autocomplete="one-time-code"
              pattern="[0-9]{6}" maxlength="6" required>
       <label class="marcar"><input type="checkbox" id="certeza" required>
-        <span>Entendo que a conta e os dados serão apagados para sempre.</span></label>
-      <button type="submit" class="perigo" id="excluir">Excluir minha conta</button>
+        <span data-i18n="excluir.certeza">Entendo que a conta e os dados serão apagados para sempre.</span></label>
+      <button type="submit" class="perigo" id="excluir" data-i18n="excluir.botao">Excluir minha conta</button>
     </form>
     <div id="aviso-confirmar" class="aviso" role="status" aria-live="polite"></div>
   </section>
 
   <section id="feito" hidden>
-    <h1>Conta excluída</h1>
-    <p>A exclusão termina em até 2 minutos. Das cópias de segurança, os dados somem em até 30 dias.</p>
-    <p>Obrigado por ter usado a Taioé. <a href="/">Voltar ao início</a></p>
+    <h1 data-i18n="excluir.feito-h1">Conta excluída</h1>
+    <p data-i18n="excluir.feito">A exclusão termina em até 2 minutos. Das cópias de segurança, os dados somem em até 30 dias.</p>
+    <p data-i18n-html="excluir.obrigado">Obrigado por ter usado a Taioé. <a href="/">Voltar ao início</a></p>
   </section>
 </main>
 
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
 <script src="/comum/vendor/supabase-js-2.117.2.js"></script>
 <script src="/comum/taioe-sessao.js"></script>
 <script src="/comum/hub.js"></script>

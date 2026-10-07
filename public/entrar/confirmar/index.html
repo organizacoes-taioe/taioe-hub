@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
-<title>Entrar neste aparelho · Taioé</title>
+<title data-i18n="confirmar.titulo">Entrar neste aparelho · Taioé</title>
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
@@ -15,24 +15,32 @@
 
 <main>
   <section id="pronto" hidden>
-    <h1>Entrar neste aparelho</h1>
-    <p id="outra-sessao" class="aviso" hidden>Você está conectado como <strong id="email-atual"></strong>. Continuar vai trocar para a conta do email que você abriu.</p>
-    <button type="button" id="entrar">Entrar neste aparelho</button>
+    <h1 data-i18n="confirmar.h1">Entrar neste aparelho</h1>
+    <p id="outra-sessao" class="aviso" hidden data-i18n-html="confirmar.outra-sessao">Você está conectado como <strong></strong>. Continuar vai trocar para a conta do email que você abriu.</p>
+    <button type="button" id="entrar" data-i18n="confirmar.h1">Entrar neste aparelho</button>
     <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
-    <p class="pequeno apagado">Pediu o código em outro navegador ou aparelho? Digite lá o código de 6 dígitos do email: este botão entra só onde ele for aberto.</p>
+    <p class="pequeno apagado" data-i18n="confirmar.outro-aparelho">Pediu o código em outro navegador ou aparelho? Digite lá o código de 6 dígitos do email: este botão entra só onde ele for aberto.</p>
   </section>
 
   <section id="sem-token" hidden>
-    <h1>Link incompleto</h1>
-    <p>Este endereço não traz o acesso. Abra de novo o botão do email ou <a href="/entrar/">peça um código novo</a>.</p>
+    <h1 data-i18n="confirmar.sem-token-h1">Link incompleto</h1>
+    <p data-i18n-html="confirmar.sem-token">Este endereço não traz o acesso. Abra de novo o botão do email ou <a href="/entrar/">peça um código novo</a>.</p>
   </section>
 </main>
 
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
 <script src="/comum/vendor/supabase-js-2.117.2.js"></script>
 <script src="/comum/taioe-sessao.js"></script>
 <script src="/comum/hub.js"></script>

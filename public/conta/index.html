@@ -4,75 +4,95 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Minha conta · Taioé</title>
+<title data-i18n="conta.titulo">Minha conta · Taioé</title>
 <link rel="stylesheet" href="/comum/estilo.css">
 </head>
 <body>
 <header class="topo">
   <a class="marca" href="/">Taioé</a>
-  <nav><a href="/cards/">Cards</a><a href="/biblioteca/">Biblioteca</a></nav>
+  <nav><a href="/cards/" data-i18n="comum.cards">Cards</a><a href="/biblioteca/" data-i18n="comum.biblioteca">Biblioteca</a></nav>
 </header>
 
 <main>
-  <p id="carregando" class="apagado">Carregando…</p>
+  <p id="carregando" class="apagado" data-i18n="comum.carregando">Carregando…</p>
   <div id="conteudo" hidden>
-    <h1>Minha conta</h1>
-    <p class="apagado">Conta: <strong id="email"></strong></p>
+    <h1 data-i18n="comum.minha-conta">Minha conta</h1>
+    <p class="apagado"><span data-i18n="comum.conta">Conta:</span> <strong id="email"></strong></p>
 
     <section class="caixa">
-      <h2>Como você quer ser chamado</h2>
+      <h2 data-i18n="conta.nome-h2">Como você quer ser chamado</h2>
       <form id="form-nome" novalidate>
-        <label for="nome" class="pequeno apagado">Nome</label>
+        <label for="nome" class="pequeno apagado" data-i18n="conta.nome">Nome</label>
         <input type="text" id="nome" maxlength="40" autocomplete="nickname" required>
-        <button type="submit">Salvar o nome</button>
+        <button type="submit" data-i18n="conta.nome-salvar">Salvar o nome</button>
       </form>
       <div id="aviso-nome" class="aviso" role="status" aria-live="polite"></div>
     </section>
 
     <section class="caixa">
-      <h2>Email</h2>
+      <h2 data-i18n="conta.lingua-h2">Língua</h2>
+      <label for="lingua" class="pequeno apagado" data-i18n="conta.lingua">Língua do site</label>
+      <select id="lingua" class="lingua-conta" data-seletor-lingua>
+        <option value="pt" lang="pt-BR">Português</option>
+        <option value="es" lang="es">Español</option>
+        <option value="en" lang="en">English</option>
+      </select>
+      <p class="pequeno apagado" data-i18n="conta.lingua-explica">Vale para a Taioé inteira, neste e nos outros aparelhos em que você entrar. A Biblioteca continua em português.</p>
+      <div id="aviso-lingua" class="aviso" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="caixa">
+      <h2 data-i18n="conta.email-h2">Email</h2>
       <form id="form-email" novalidate>
-        <label for="novo-email" class="pequeno apagado">Novo email</label>
+        <label for="novo-email" class="pequeno apagado" data-i18n="conta.novo-email">Novo email</label>
         <input type="email" id="novo-email" autocomplete="email" required>
-        <button type="submit">Trocar o email</button>
+        <button type="submit" data-i18n="conta.trocar-email">Trocar o email</button>
       </form>
-      <p class="pequeno apagado">Mandamos uma confirmação para o endereço atual e outra para o novo. A troca vale depois das duas.</p>
+      <p class="pequeno apagado" data-i18n="conta.email-explica">Mandamos uma confirmação para o endereço atual e outra para o novo. A troca vale depois das duas.</p>
       <div id="aviso-email" class="aviso" role="status" aria-live="polite"></div>
     </section>
 
     <section class="caixa">
-      <h2>Meus dados</h2>
-      <p>Uma cópia de tudo o que a Taioé guarda sobre você, num arquivo JSON.</p>
-      <button type="button" id="baixar">Baixar meus dados</button>
+      <h2 data-i18n="comum.meus-dados">Meus dados</h2>
+      <p data-i18n="conta.dados-explica">Uma cópia de tudo o que a Taioé guarda sobre você, num arquivo JSON.</p>
+      <button type="button" id="baixar" data-i18n="conta.baixar">Baixar meus dados</button>
       <label class="marcar"><input type="checkbox" id="calibragem">
-        <span>Não usar minhas respostas, nem de forma anônima, para calibrar os baralhos.</span></label>
+        <span data-i18n="conta.calibragem">Não usar minhas respostas, nem de forma anônima, para calibrar os baralhos.</span></label>
       <div id="aviso-dados" class="aviso" role="status" aria-live="polite"></div>
-      <p class="pequeno apagado">Seu registro de acesso (endereço IP e horários) é entregue a pedido, em até 15 dias: escreva para <a href="mailto:privacidade@taioe.com.br">privacidade@taioe.com.br</a>.</p>
+      <p class="pequeno apagado" data-i18n-html="conta.acesso">Seu registro de acesso (endereço IP e horários) é entregue a pedido, em até 15 dias: escreva para <a href="mailto:privacidade@taioe.com.br">privacidade@taioe.com.br</a>.</p>
     </section>
 
     <section class="caixa">
-      <h2>Sair</h2>
-      <p>Você fica conectado neste navegador até sair.</p>
+      <h2 data-i18n="comum.sair">Sair</h2>
+      <p data-i18n="conta.sair-explica">Você fica conectado neste navegador até sair.</p>
       <label class="marcar"><input type="checkbox" id="apagar-local">
-        <span>Apagar também os dados da Taioé guardados neste aparelho.</span></label>
-      <button type="button" id="sair">Sair deste navegador</button>
-      <button type="button" class="secundario" id="sair-todos">Sair de todos os aparelhos</button>
+        <span data-i18n="conta.apagar-local">Apagar também os dados da Taioé guardados neste aparelho.</span></label>
+      <button type="button" id="sair" data-i18n="conta.sair-este">Sair deste navegador</button>
+      <button type="button" class="secundario" id="sair-todos" data-i18n="conta.sair-todos">Sair de todos os aparelhos</button>
       <div id="aviso-sair" class="aviso" role="status" aria-live="polite"></div>
     </section>
 
     <section class="caixa">
-      <h2>Excluir a conta</h2>
-      <p>Apaga a conta e todos os dados dela: nome, progresso dos cards e posições de leitura.</p>
-      <a class="botao secundario" href="/entrar/excluir/">Excluir minha conta</a>
+      <h2 data-i18n="excluir.h1">Excluir a conta</h2>
+      <p data-i18n="conta.excluir-explica">Apaga a conta e todos os dados dela: nome, progresso dos cards e posições de leitura.</p>
+      <a class="botao secundario" href="/entrar/excluir/" data-i18n="excluir.botao">Excluir minha conta</a>
     </section>
   </div>
 </main>
 
 <footer class="rodape">
-  <a href="/privacidade/">Privacidade</a>
-  <a href="/termos/">Termos de uso</a>
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
   <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
 </footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
 <script src="/comum/vendor/supabase-js-2.117.2.js"></script>
 <script src="/comum/taioe-sessao.js"></script>
 <script src="/comum/hub.js"></script>

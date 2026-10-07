@@ -48,7 +48,7 @@ body {
   font: 400 17px/1.55 "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 a { color: var(--acento); }
-a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
 
 .topo {
   display: flex;
@@ -147,6 +147,26 @@ button:disabled { opacity: .55; cursor: default; }
   justify-content: center;
 }
 .rodape a { color: var(--apagado); }
+
+/* ---- Língua: o seletor (rodapé e Minha conta) e o aviso dos documentos legais ---- */
+.so-leitor {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.rodape { align-items: center; }
+.rodape .lingua { display: inline; margin: 0; font-weight: 400; }
+select {
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 3px 8px;
+}
+.rodape select { color: var(--apagado); font-size: .9rem; }
+select.lingua-conta { display: block; padding: 10px 12px; margin-bottom: 10px; }
+.fora-do-pt { display: none; }
+html.lingua-es .fora-do-pt, html.lingua-en .fora-do-pt { display: block; }
 
 /* ---- Página inicial: própria, simples, um caminho embaixo do outro ---- */
 body.inicio main.porta { max-width: 440px; text-align: center; padding: clamp(48px, 14vh, 140px) 24px 48px; }

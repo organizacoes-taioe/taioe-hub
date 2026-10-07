@@ -3,7 +3,7 @@
    libera aqui. O pedido vai para conta.pedidos_exclusao; o cron apaga em até 2 minutos. */
 (function () {
   'use strict';
-  var H = TaioeHub, sb = TaioeSessao.cliente(), email = '';
+  var H = TaioeHub, I = TaioeI18n, t = I.t, sb = TaioeSessao.cliente(), email = '';
 
   function passo(qual) {
     ['carregando', 'passo-pedir', 'passo-confirmar', 'feito'].forEach(function (id) { H.mostrar(id, id === qual); });
@@ -13,17 +13,17 @@
     var sessao = await H.sessaoAtual();
     if (!sessao) { TaioeSessao.irParaEntrar(); return; }
     email = sessao.user.email;
-    H.$('email').textContent = email;
+    I.marcar('email', 'excluir.explica', { email: email }, true);
     passo('passo-pedir');
   })();
 
   H.$('pedir').addEventListener('click', async function () {
     var botao = this;
     botao.disabled = true;
-    H.avisar('aviso-pedir', 'Verificando que você não é um robô…');
+    H.avisar('aviso-pedir', t('comum.robo'));
     try {
       var captchaToken = await TaioeTurnstile.token();
-      H.avisar('aviso-pedir', 'Enviando…');
+      H.avisar('aviso-pedir', t('comum.enviando'));
       var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: false, captchaToken: captchaToken } });
       TaioeTurnstile.reiniciar();
       if (r.error) { H.avisar('aviso-pedir', H.mensagemDeErro(r.error), 'erro'); return; }
@@ -40,10 +40,10 @@
   H.$('form-codigo').addEventListener('submit', async function (ev) {
     ev.preventDefault();
     var token = H.$('codigo').value;
-    if (token.length !== 6) { H.avisar('aviso-confirmar', 'O código tem 6 dígitos.', 'erro'); return; }
-    if (!H.$('certeza').checked) { H.avisar('aviso-confirmar', 'Marque a confirmação para continuar.', 'erro'); return; }
+    if (token.length !== 6) { H.avisar('aviso-confirmar', t('comum.codigo-6'), 'erro'); return; }
+    if (!H.$('certeza').checked) { H.avisar('aviso-confirmar', t('excluir.marque'), 'erro'); return; }
     H.$('excluir').disabled = true;
-    H.avisar('aviso-confirmar', 'Conferindo…');
+    H.avisar('aviso-confirmar', t('comum.conferindo'));
     try {
       var r = await sb.auth.verifyOtp({ email: email, token: token, type: 'email' });
       if (r.error) { H.avisar('aviso-confirmar', H.mensagemDeErro(r.error), 'erro'); return; }
