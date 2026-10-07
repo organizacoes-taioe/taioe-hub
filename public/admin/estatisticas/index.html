@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Estatísticas · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+<link rel="stylesheet" href="/admin/estatisticas/estatisticas.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+  <nav><a href="/cards/curadoria/">Curadoria</a><a href="/conta/">Conta</a></nav>
+</header>
+
+<main class="estat">
+  <p id="carregando" class="apagado">Carregando…</p>
+  <div id="aviso" class="aviso erro" role="status"></div>
+  <div id="conteudo" hidden>
+    <div class="cabeca">
+      <h1>Estatísticas</h1>
+      <p class="apagado pequeno">Só a sua conta vê esta página. Gerado em <span id="gerado"></span>. <button type="button" id="recarregar" class="link">Atualizar</button></p>
+    </div>
+    <nav class="secoes" id="secoes" aria-label="Seções"></nav>
+    <div id="blocos"></div>
+  </div>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+</footer>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/admin/estatisticas/estatisticas.js"></script>
+</body>
+</html>
