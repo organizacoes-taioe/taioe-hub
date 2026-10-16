@@ -7,7 +7,9 @@
   var H = TaioeHub, sb = TaioeSessao.cliente();
   var NOME_CURSO = { 'es-pt': 'Espanhol (para quem fala português)', 'en-pt': 'Inglês (para quem fala português)',
     'es-en': 'Espanhol (para quem fala inglês)', 'en-es': 'Inglês (para quem fala espanhol)',
-    'pt-es': 'Português (para quem fala espanhol)', 'pt-en': 'Português (para quem fala inglês)' };
+    'pt-es': 'Português (para quem fala espanhol)', 'pt-en': 'Português (para quem fala inglês)',
+    'fr-pt': 'Francês (para quem fala português)', 'fr-es': 'Francês (para quem fala espanhol)',
+    'fr-en': 'Francês (para quem fala inglês)' };
   var NOME_APP = { hub: 'Página inicial e conta', cards: 'Cards', biblioteca: 'Biblioteca' };
   var NOME_LINGUA = { pt: 'português', es: 'espanhol', en: 'inglês' };
 
