@@ -27,7 +27,7 @@ Os três sites dividem a mesma origem (`https://taioe.com.br`). Cada repositóri
 5. **Service worker** só em `/<app>/sw.js`, com escopo `/<app>/`. O hub não tem service worker nem manifest.
 6. **supabase-js:** a mesma versão nos três repositórios, com o sha256 anotado aqui e conferido pelo CI de cada um.
 7. **Routes:** depois de todo deploy que mexer em `wrangler.jsonc`, e uma vez por mês, confira que existem **exatamente duas**: `taioe.com.br/cards*` → `taioe-cards` e `taioe.com.br/biblioteca*` → `taioe-biblioteca`.
-8. **Administração:** não existe tela de administração no site.
+8. **Administração:** as páginas internas ficam em `/admin/` (a página que reúne as outras), `/admin/<slug>/` e `/cards/curadoria/`, e abrem só para o revisor geral (`conta.papeis`: revisor, `'*'`), que o banco aceita para uma conta só. O conteúdo delas fica no banco, nunca aqui (este repositório é público): as páginas particulares em `conta.paginas_privadas`, alimentadas por `dados/paginas/` do `taioe-infra`. Página interna nova entra também na lista de `/admin/` (`dados/paginas/admin.json`).
 
 ## Línguas da interface
 
