@@ -94,7 +94,231 @@
     return s;
   }
 
-  function desenhar(v) {
+  /* ── o retorno dos dominados (pedido do Gere, 17/10/2026) ──
+     conta.retornos() devolve contagens [degrau, inferido, dias previstos, dias passados, n, certas],
+     de todos e da própria conta. Os gráficos são SVG montado pelo DOM, na largura real do
+     bloco (redesenhado ao mudar a largura), com a margem de 95% de Wilson em cada ponto. */
+  var SVG = 'http://www.w3.org/2000/svg';
+  /* o que redesenha os gráficos na largura de agora: a página monta escondida («Carregando…») */
+  var redesenhar = function () {};
+  function svg(tag, attrs, pai) {
+    var e = document.createElementNS(SVG, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (pai) pai.appendChild(e);
+    return e;
+  }
+  function wilson(ok, n) {
+    if (!n) return [0, 1];
+    var z = 1.96, p = ok / n, d = 1 + z * z / n;
+    var c = (p + z * z / (2 * n)) / d, m = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d;
+    return [Math.max(0, c - m), Math.min(1, c + m)];
+  }
+  function pct(x) { return Math.round(100 * x) + '%'; }
+  function rotuloDias(d) {
+    if (d < 1) return 'menos de 1 dia';
+    if (d < 2) return '1 dia';
+    if (d < 14) return Math.round(d) + ' dias';
+    if (d < 60) return Math.round(d / 7) + ' sem.';
+    if (d < 365) return Math.round(d / 30) + ' meses';
+    return Math.round(d / 365 * 10) / 10 + ' anos';
+  }
+  function rotuloDegrau(d) {
+    return ['3 dias', '1 semana', '2 semanas', '1 mês', '3 meses', '6 meses'][d];
+  }
+
+  /* Agrupa em faixas: «chave» devolve o índice da faixa de cada linha. */
+  function agrupar(linhas, chave) {
+    var g = {};
+    linhas.forEach(function (l) {
+      var k = chave(l);
+      if (k === null) return;
+      var x = g[k] || (g[k] = { k: k, n: 0, ok: 0 });
+      x.n += l.n; x.ok += l.ok;
+    });
+    return Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) { return a.k - b.k; });
+  }
+
+  /* Um gráfico de pontos: x em escala log, y em % de acerto, de «piso» a 100%. «pontos» é
+     [{x, n, ok, dica}]; «marcas» são os traços verticais de referência no eixo x. */
+  function pontosLog(caixa, o) {
+    var larg = Math.max(260, caixa.clientWidth || 600), alt = o.altura || 240;
+    var m = { e: 40, d: 12, t: 12, b: 34 };
+    var w = larg - m.e - m.d, h = alt - m.t - m.b;
+    var lx0 = Math.log(o.xmin), lx1 = Math.log(o.xmax);
+    var piso = o.piso;
+    function X(x) { return m.e + w * (Math.log(Math.min(Math.max(x, o.xmin), o.xmax)) - lx0) / (lx1 - lx0); }
+    function Y(p) { return m.t + h * (1 - (Math.max(p, piso) - piso) / (1 - piso)); }
+    var s = svg('svg', { width: larg, height: alt, viewBox: '0 0 ' + larg + ' ' + alt, class: 'pontos', role: 'img',
+      'aria-label': o.titulo });
+    for (var p = piso; p <= 1.0001; p += 0.1) {
+      svg('line', { x1: m.e, x2: m.e + w, y1: Y(p), y2: Y(p), class: 'grade' }, s);
+      svg('text', { x: m.e - 6, y: Y(p) + 4, class: 'eixo-y' }, s).textContent = pct(p);
+    }
+    if (o.alvo) {
+      svg('line', { x1: m.e, x2: m.e + w, y1: Y(o.alvo), y2: Y(o.alvo), class: 'alvo' }, s);
+    }
+    (o.marcas || []).forEach(function (mk) {
+      svg('line', { x1: X(mk.x), x2: X(mk.x), y1: m.t, y2: m.t + h, class: mk.forte ? 'marca forte' : 'marca' }, s);
+      svg('text', { x: X(mk.x), y: alt - m.b + 16, class: 'eixo-x' }, s).textContent = mk.rotulo;
+    });
+    o.pontos.forEach(function (pt) {
+      var ic = wilson(pt.ok, pt.n), cx = X(pt.x), fraco = pt.n < 10;
+      var g = svg('g', { class: 'ponto' + (fraco ? ' fraco' : '') }, s);
+      svg('line', { x1: cx, x2: cx, y1: Y(ic[0]), y2: Y(ic[1]), class: 'margem' }, g);
+      svg('circle', { cx: cx, cy: Y(pt.ok / pt.n), r: 5, class: 'miolo' }, g);
+      svg('circle', { cx: cx, cy: Y(pt.ok / pt.n), r: 14, class: 'alvo-do-mouse' }, g);
+      svg('title', {}, g).textContent = pt.dica + ': ' + pct(pt.ok / pt.n) + ' de acerto em ' + fmt(pt.n) +
+        ' revisões (margem de ' + pct(ic[0]) + ' a ' + pct(ic[1]) + ')';
+    });
+    caixa.appendChild(s);
+  }
+
+  /* Faixas de dias passados: em cada uma o ponto fica no meio (média geométrica). */
+  var FAIXAS_DIAS = [1, 2, 3, 4, 5, 6, 7, 9, 11, 14, 18, 23, 30, 40, 55, 75, 100, 135, 180, 250, 365, 1000];
+  /* Espera ÷ degrau, em passos de √2: 0,5 · 0,71 · 1 · 1,41 · 2 · 2,83 */
+  var FAIXAS_RAZAO = [0, 0.5, 0.71, 1, 1.41, 2, 2.83, 1000];
+
+  function blocoRetornos(dados) {
+    var b = bloco('retornos', 'Cards: o retorno dos dominados');
+    if (!dados) {
+      b.appendChild(el('p', 'vazio', 'Os retornos ainda não estão no banco deste ambiente.'));
+      return;
+    }
+    var dias = dados.dias || [3, 7, 14, 30, 90, 180];
+    var quem = 'meus';
+    var observador = null;
+    var controle = el('div', 'escolha');
+    var corpo = el('div');
+    b.appendChild(el('p', 'apagado pequeno', 'Cada revisão de card dominado, pelo tempo que o card de fato esperou ' +
+      'desde a resposta anterior. Desde 17/10 a volta de cada card é sorteada entre metade e o dobro do degrau; ' +
+      'antes, ele voltava no degrau ou depois, quando a fila deixava. As respostas de antes de 06/10 vieram dos logs ' +
+      'do app antigo, sem o degrau: ele foi deduzido do tempo passado.'));
+    [['meus', 'Sua conta'], ['todos', 'Todos (' + fmt(dados.pessoas) + (Number(dados.pessoas) === 1 ? ' pessoa)' : ' pessoas)')]].forEach(function (op) {
+      var bt = el('button', 'secundario' + (op[0] === quem ? ' ativo' : ''), op[1]);
+      bt.type = 'button';
+      bt.setAttribute('aria-pressed', op[0] === quem ? 'true' : 'false');
+      bt.addEventListener('click', function () {
+        quem = op[0];
+        Array.prototype.forEach.call(controle.children, function (x) {
+          x.classList.toggle('ativo', x === bt); x.setAttribute('aria-pressed', x === bt ? 'true' : 'false');
+        });
+        montar();
+      });
+      controle.appendChild(bt);
+    });
+    b.appendChild(controle);
+    b.appendChild(corpo);
+
+    function montar() {
+      corpo.textContent = '';
+      var linhas = (dados[quem] || []).map(function (r) {
+        return { degrau: r[0], inferido: r[1], previsto: r[2], dias: r[3], n: Number(r[4]), ok: Number(r[5]) };
+      });
+      var total = linhas.reduce(function (s, l) { return s + l.n; }, 0);
+      var certas = linhas.reduce(function (s, l) { return s + l.ok; }, 0);
+      var sorteadas = linhas.filter(function (l) { return !l.inferido && l.previsto !== dias[l.degrau]; })
+        .reduce(function (s, l) { return s + l.n; }, 0);
+      corpo.appendChild(numeros([[total, 'revisões de dominado'], [total ? Math.round(100 * certas / total) : null, '% de acerto'],
+        [sorteadas, 'com a volta sorteada']]));
+      if (!total) { corpo.appendChild(el('p', 'vazio', 'Nenhuma revisão de dominado ainda.')); return; }
+
+      var g1 = el('div', 'grafico');
+      g1.appendChild(el('p', 'titulo', 'Acerto pelo tempo que o card esperou (todos os degraus)'));
+      var area1 = el('div', 'area');
+      g1.appendChild(area1);
+      corpo.appendChild(g1);
+      var faixas = agrupar(linhas, function (l) {
+        for (var i = FAIXAS_DIAS.length - 2; i >= 0; i--) if (l.dias >= FAIXAS_DIAS[i]) return i;
+        return 0;
+      });
+      var pts = faixas.map(function (f) {
+        var a = FAIXAS_DIAS[f.k], z = FAIXAS_DIAS[f.k + 1];
+        var dica = z <= 14 ? a + ' a ' + z + ' dias' : z >= 1000 ? 'mais de ' + rotuloDias(a) : 'de ' + rotuloDias(a) + ' a ' + rotuloDias(z);
+        return { x: Math.sqrt(a * z), n: f.n, ok: f.ok, dica: 'Esperou ' + dica };
+      });
+      var menor = Math.min.apply(null, pts.map(function (p) { return wilson(p.ok, p.n)[0]; }).concat([0.7]));
+      var piso = Math.max(0, Math.floor(menor * 10) / 10);
+      var desenho1 = function () {
+        area1.textContent = '';
+        pontosLog(area1, { titulo: 'Acerto pelo tempo de espera', xmin: 1, xmax: 400, piso: piso, alvo: 0.9, pontos: pts,
+          marcas: dias.map(function (d, i) { return { x: d, rotulo: rotuloDegrau(i), forte: true }; }) });
+      };
+      desenho1();
+      g1.appendChild(el('p', 'legenda', 'Ponto: o acerto da faixa; traço: a margem de 95%; ponto apagado: menos de ' +
+        '10 revisões. As linhas verticais são os degraus; a tracejada, 90% de acerto, a meta mais comum na ' +
+        'pesquisa de revisão espaçada.'));
+
+      corpo.appendChild(el('h3', null, 'Em cada degrau: a espera de fato ÷ o degrau'));
+      var multiplos = el('div', 'multiplos');
+      corpo.appendChild(multiplos);
+      var desenhos = [desenho1];
+      dias.forEach(function (d, i) {
+        var doDegrau = linhas.filter(function (l) { return l.degrau === i; });
+        var n = doDegrau.reduce(function (s, l) { return s + l.n; }, 0);
+        var g = el('div', 'grafico');
+        g.appendChild(el('p', 'titulo', rotuloDegrau(i) + ' · ' + fmt(n) + ' revisões'));
+        multiplos.appendChild(g);
+        if (!n) { g.appendChild(el('p', 'vazio', 'Sem revisões ainda.')); return; }
+        var area = el('div', 'area');
+        g.appendChild(area);
+        var fx = agrupar(doDegrau, function (l) {
+          var r = (l.dias + 0.5) / d;
+          for (var j = FAIXAS_RAZAO.length - 2; j >= 0; j--) if (r >= FAIXAS_RAZAO[j]) return j;
+          return 0;
+        });
+        var pp = fx.map(function (f) {
+          var a = Math.max(FAIXAS_RAZAO[f.k], 0.35), z = Math.min(FAIXAS_RAZAO[f.k + 1], 4);
+          return { x: Math.sqrt(a * z), n: f.n, ok: f.ok,
+            dica: 'Esperou ' + (f.k === 0 ? 'menos da metade' : f.k === FAIXAS_RAZAO.length - 2 ? 'mais de ' + FAIXAS_RAZAO[f.k] + '×' :
+              'de ' + FAIXAS_RAZAO[f.k] + '× a ' + FAIXAS_RAZAO[f.k + 1] + '×') + ' o degrau' };
+        });
+        var desenho = function () {
+          area.textContent = '';
+          pontosLog(area, { titulo: 'Acerto no degrau de ' + rotuloDegrau(i), xmin: 0.35, xmax: 4, piso: piso, alvo: 0.9,
+            altura: 170, pontos: pp,
+            marcas: [{ x: 0.5, rotulo: '½×' }, { x: 1, rotulo: '1×', forte: true }, { x: 2, rotulo: '2×' }] });
+        };
+        desenho();
+        desenhos.push(desenho);
+      });
+
+      corpo.appendChild(el('h3', null, 'Os números'));
+      corpo.appendChild(tabela(
+        [{ t: 'Degrau', f: function (x) { return rotuloDegrau(x.i); } },
+         { t: 'Revisões', n: 1, f: function (x) { return fmt(x.n); } },
+         { t: 'Acerto', n: 1, f: function (x) { return x.n ? pct(x.ok / x.n) : '—'; } },
+         { t: 'Antes do degrau', n: 1, f: function (x) { return x.an ? pct(x.aok / x.an) + ' de ' + fmt(x.an) : '—'; } },
+         { t: 'Depois (até 1,5×)', n: 1, f: function (x) { return x.dn ? pct(x.dok / x.dn) + ' de ' + fmt(x.dn) : '—'; } },
+         { t: 'Muito depois', n: 1, f: function (x) { return x.mn ? pct(x.mok / x.mn) + ' de ' + fmt(x.mn) : '—'; } },
+         { t: 'Deduzidas', n: 1, f: function (x) { return fmt(x.inf); } }],
+        dias.map(function (d, i) {
+          var x = { i: i, n: 0, ok: 0, an: 0, aok: 0, dn: 0, dok: 0, mn: 0, mok: 0, inf: 0 };
+          linhas.forEach(function (l) {
+            if (l.degrau !== i) return;
+            var r = (l.dias + 0.5) / d;
+            x.n += l.n; x.ok += l.ok;
+            if (l.inferido) x.inf += l.n;
+            if (r < 1) { x.an += l.n; x.aok += l.ok; } else if (r < 1.5) { x.dn += l.n; x.dok += l.ok; } else { x.mn += l.n; x.mok += l.ok; }
+          });
+          return x;
+        }).filter(function (x) { return x.n; }), 'Nenhuma revisão ainda.'));
+
+      var largura = corpo.clientWidth;
+      redesenhar = function () {
+        if (Math.abs(corpo.clientWidth - largura) < 8) return;
+        largura = corpo.clientWidth;
+        desenhos.forEach(function (f) { f(); });
+      };
+      if (observador) observador.disconnect();
+      if (window.ResizeObserver) {
+        observador = new ResizeObserver(function () { redesenhar(); });
+        observador.observe(corpo);
+      }
+    }
+    montar();
+  }
+
+  function desenhar(v, retornos) {
     H.$('secoes').textContent = ''; H.$('blocos').textContent = '';
     H.$('gerado').textContent = new Date(v.geradoEm).toLocaleString('pt-BR');
 
@@ -119,6 +343,8 @@
     s.appendChild(el('p', 'apagado pequeno', 'Língua da interface: ' + (Object.keys(li).map(function (k) {
       return (NOME_LINGUA[k] || k) + ' ' + fmt(li[k]);
     }).join(' · ') || '—') + '.'));
+
+    blocoRetornos(retornos);
 
     var cursos = v.cards || {};
     Object.keys(cursos).sort().forEach(function (codigo) {
@@ -186,15 +412,17 @@
 
   async function carregar() {
     H.avisar('aviso', '');
-    var r = await sb.schema('conta').rpc('estatisticas');
+    var res = await Promise.all([sb.schema('conta').rpc('estatisticas'), sb.schema('conta').rpc('retornos')]);
+    var r = res[0];
     if (r.error) {
       H.mostrar('carregando', false);
       H.avisar('aviso', r.error.code === 'PT403' ? 'Esta página é só da administração da Taioé.' : H.mensagemDeErro(r.error), 'erro');
       return;
     }
-    desenhar(r.data || {});
+    desenhar(r.data || {}, res[1].error ? null : res[1].data);
     H.mostrar('carregando', false);
     H.mostrar('conteudo', true);
+    redesenhar();
   }
 
   (async function () {
@@ -203,4 +431,5 @@
     await carregar();
   })();
   H.$('recarregar').addEventListener('click', carregar);
+  window.addEventListener('resize', function () { redesenhar(); });
 })();
