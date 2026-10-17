@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Beowulf · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+<link rel="stylesheet" href="/admin/beowulf/beowulf.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+  <nav><a href="/admin/estatisticas/">Estatísticas</a><a href="/conta/">Conta</a></nav>
+</header>
+
+<main class="galeria">
+  <p id="carregando" class="apagado">Carregando…</p>
+  <div id="aviso" class="aviso erro" role="status"></div>
+  <div id="conteudo" hidden>
+    <div class="cabeca">
+      <h1 id="titulo">Beowulf</h1>
+      <p id="intro" class="intro"></p>
+      <p class="apagado pequeno">Só a sua conta vê esta página. Atualizada em <span id="atualizado"></span>.</p>
+    </div>
+    <div class="filtros">
+      <input type="search" id="busca" placeholder="Buscar artista, cena, livro…" aria-label="Buscar">
+      <label><input type="checkbox" id="so-dp"> Só domínio público</label>
+      <label><input type="checkbox" id="so-img"> Só com imagem</label>
+      <span id="contagem" class="apagado pequeno"></span>
+    </div>
+    <nav class="secoes" id="secoes" aria-label="Períodos"></nav>
+    <div id="blocos"></div>
+  </div>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+</footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/admin/beowulf/beowulf.js"></script>
+</body>
+</html>
