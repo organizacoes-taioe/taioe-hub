@@ -27,3 +27,25 @@ main.estat { max-width: 1040px; }
 .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .vazio { color: var(--apagado); font-size: .9rem; }
 @media (max-width: 720px) { .duas { grid-template-columns: 1fr; } }
+/* O retorno dos dominados: pontos com a margem de 95%, em SVG na largura real do bloco. */
+.escolha { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+.escolha button { padding: 6px 14px; font-size: .9rem; }
+.escolha button.ativo { background: var(--acento); color: var(--acento-texto); border-color: var(--acento); }
+.grafico .area { width: 100%; }
+.grafico .legenda { color: var(--apagado); font-size: .8rem; margin: 6px 0 0; }
+.multiplos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .multiplos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .multiplos { grid-template-columns: minmax(0, 1fr); } }
+svg.pontos { display: block; overflow: visible; max-width: 100%; height: auto; }
+svg.pontos .grade { stroke: var(--borda); stroke-width: 1; }
+svg.pontos .alvo { stroke: var(--apagado); stroke-width: 1; stroke-dasharray: 4 4; }
+svg.pontos .marca { stroke: var(--borda); stroke-width: 1; stroke-dasharray: 2 3; }
+svg.pontos .marca.forte { stroke: var(--apagado); stroke-opacity: .45; stroke-dasharray: none; }
+svg.pontos text { fill: var(--apagado); font-size: 11px; font-variant-numeric: tabular-nums; }
+svg.pontos .eixo-y { text-anchor: end; }
+svg.pontos .eixo-x { text-anchor: middle; }
+svg.pontos .margem { stroke: var(--acento); stroke-width: 2; stroke-linecap: round; stroke-opacity: .55; }
+svg.pontos .miolo { fill: var(--acento); stroke: var(--caixa); stroke-width: 2; }
+svg.pontos .alvo-do-mouse { fill: transparent; cursor: default; }
+svg.pontos .ponto.fraco { opacity: .4; }
+svg.pontos .ponto:hover .miolo { stroke: var(--texto); }
