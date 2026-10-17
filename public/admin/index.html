@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Administração · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+  <nav><a href="/conta/">Conta</a></nav>
+</header>
+
+<main class="admin">
+  <p id="carregando" class="apagado">Carregando…</p>
+  <div id="aviso" class="aviso erro" role="status"></div>
+  <div id="conteudo" hidden>
+    <h1 id="titulo">Administração</h1>
+    <p id="intro" class="apagado"></p>
+    <p class="quem pequeno">Você entrou como <b id="email"></b>. Só esta conta vê estas páginas: o banco aceita um único revisor geral.</p>
+    <div id="grupos"></div>
+    <p class="apagado pequeno">Lista atualizada em <span id="atualizado"></span>.</p>
+  </div>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+</footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/admin/admin.js"></script>
+</body>
+</html>

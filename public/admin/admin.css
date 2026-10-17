@@ -1,0 +1,13 @@
+/* /admin/ (só o revisor geral): os caminhos para as páginas internas. Usa os tokens de /comum/estilo.css. */
+main.admin { max-width: 720px; }
+.admin .quem { background: var(--caixa); border: 1px solid var(--borda); border-radius: 12px; padding: 10px 14px; overflow-wrap: anywhere; }
+.grupo { margin: 30px 0; }
+.grupo > h2 { font-size: 1.2rem; margin: 0 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borda); }
+.grupo .caminhos { gap: 14px; }
+.item .caminho { overflow-wrap: anywhere; }
+.item .extras { display: flex; flex-wrap: wrap; gap: 14px; margin: 6px 0 0 20px; font-size: .88rem; }
+.etiqueta { display: inline-block; margin-left: 8px; padding: 0 8px; border: 1px solid var(--borda); border-radius: 999px; font-size: .75rem; font-weight: 600; color: var(--apagado); vertical-align: 2px; }
+.etiqueta.espera { color: var(--acento); border-color: var(--acento); }
+.grupo ul { margin: 0; padding-left: 1.2em; }
+.grupo li { margin: .4em 0; }
+.vazio { color: var(--apagado); font-size: .95rem; }
