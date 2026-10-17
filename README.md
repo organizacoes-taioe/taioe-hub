@@ -12,11 +12,12 @@ Os três sites dividem a mesma origem (`https://taioe.com.br`). Cada repositóri
 |---|---|---|
 | `/cards`, `/cards/...` | `taioe-cards` | route `taioe.com.br/cards*` |
 | `/biblioteca`, `/biblioteca/...` | `taioe-biblioteca` | route `taioe.com.br/biblioteca*` |
+| `/biblia`, `/biblia/...` | `taioe-biblia` | route `taioe.com.br/biblia*` |
 | todo o resto | `taioe-hub` | Custom Domain `taioe.com.br` |
 
-1. **Prefixos:** nenhum caminho do hub começa com `cards` ou `biblioteca`. Cada repositório declara nas routes só o próprio prefixo.
+1. **Prefixos:** nenhum caminho do hub começa com `cards`, `biblioteca` ou `biblia`. Cada repositório declara nas routes só o próprio prefixo.
 2. **Sessão:** as chaves `taioe-auth` e `taioe-auth-*` do armazenamento são do módulo de sessão, e ninguém mais as usa.
-3. **Armazenamento:** tudo o que um app grava no navegador leva o prefixo dele (`hub:`, `cards:`, `biblioteca:`), em localStorage, IndexedDB, Cache Storage, BroadcastChannel e Web Locks. A única chave comum é `taioe:lingua` (a língua da interface, abaixo); «apagar também os dados deste aparelho» apaga o prefixo `taioe:` junto com os outros.
+3. **Armazenamento:** tudo o que um app grava no navegador leva o prefixo dele (`hub:`, `cards:`, `biblioteca:`, `biblia:`), em localStorage, IndexedDB, Cache Storage, BroadcastChannel e Web Locks. A única chave comum é `taioe:lingua` (a língua da interface, abaixo); «apagar também os dados deste aparelho» apaga o prefixo `taioe:` junto com os outros.
 4. **Proibido:**
    - `localStorage.clear()`;
    - cookies;
@@ -26,8 +27,8 @@ Os três sites dividem a mesma origem (`https://taioe.com.br`). Cada repositóri
    - beacons de estatística.
 5. **Service worker** só em `/<app>/sw.js`, com escopo `/<app>/`. O hub não tem service worker nem manifest.
 6. **supabase-js:** a mesma versão nos três repositórios, com o sha256 anotado aqui e conferido pelo CI de cada um.
-7. **Routes:** depois de todo deploy que mexer em `wrangler.jsonc`, e uma vez por mês, confira que existem **exatamente duas**: `taioe.com.br/cards*` → `taioe-cards` e `taioe.com.br/biblioteca*` → `taioe-biblioteca`.
-8. **Administração:** as páginas internas ficam em `/admin/` (a página que reúne as outras), `/admin/<slug>/` e `/cards/curadoria/`, e abrem só para o revisor geral (`conta.papeis`: revisor, `'*'`), que o banco aceita para uma conta só. O conteúdo delas fica no banco, nunca aqui (este repositório é público): as páginas particulares em `conta.paginas_privadas`, alimentadas por `dados/paginas/` do `taioe-infra`. Página interna nova entra também na lista de `/admin/` (`dados/paginas/admin.json`).
+7. **Routes:** depois de todo deploy que mexer em `wrangler.jsonc`, e uma vez por mês, confira que existem **exatamente três**: `taioe.com.br/cards*` → `taioe-cards`, `taioe.com.br/biblioteca*` → `taioe-biblioteca` e `taioe.com.br/biblia*` → `taioe-biblia` (desde 17/10/2026; a Bíblia ainda não tem login, então não leva supabase-js nem o módulo de sessão).
+8. **Administração:** as páginas internas ficam em `/admin/` (a página que reúne as outras), `/admin/<slug>/` (entre elas `/admin/biblia/`, a revisão da Bíblia Taioé, onde o revisor geral grava respostas em `conta.respostas_privadas`) e `/cards/curadoria/`, e abrem só para o revisor geral (`conta.papeis`: revisor, `'*'`), que o banco aceita para uma conta só. O conteúdo delas fica no banco, nunca aqui (este repositório é público): as páginas particulares em `conta.paginas_privadas`, alimentadas por `dados/paginas/` do `taioe-infra`. Página interna nova entra também na lista de `/admin/` (`dados/paginas/admin.json`).
 
 ## Línguas da interface
 

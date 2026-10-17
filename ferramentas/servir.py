@@ -1,5 +1,6 @@
 """Serve os três sites juntos em http://localhost:8777, como em produção:
-/cards → taioe/cards/public, /biblioteca → taioe/biblioteca/public, o resto → taioe/hub/public.
+/cards → taioe/cards/public, /biblioteca → taioe/biblioteca/public, /biblia → taioe/biblia/public,
+o resto → taioe/hub/public.
 
     python hub/ferramentas/servir.py
 
@@ -14,11 +15,13 @@ from urllib.parse import unquote, urlsplit
 
 B = os.path.dirname(os.path.abspath(__file__))
 HUB = os.path.realpath(os.path.join(B, '..', 'public'))
-APPS = {  # pastas irmãs: taioe/hub, taioe/cards, taioe/biblioteca
+APPS = {  # pastas irmãs: taioe/hub, taioe/cards, taioe/biblioteca, taioe/biblia
     '/cards': os.path.realpath(os.path.join(B, '..', '..', 'cards', 'public')),
     '/biblioteca': os.path.realpath(os.path.join(B, '..', '..', 'biblioteca', 'public')),
+    '/biblia': os.path.realpath(os.path.join(B, '..', '..', 'biblia', 'public')),
 }
-HOSTS = {'localhost:8777', '127.0.0.1:8777'}
+PORTA = int(os.environ.get('PORT') or 8777)   # o painel de prévia pode dar outra porta
+HOSTS = {f'localhost:{PORTA}', f'127.0.0.1:{PORTA}'}
 PROIBIDO = os.path.join(HUB, '__proibido__')  # não existe: vira 404
 
 
@@ -56,5 +59,5 @@ class H(http.server.SimpleHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    print('Taioé local em http://localhost:8777/  (Ctrl+C para parar)')
-    http.server.ThreadingHTTPServer(('127.0.0.1', 8777), H).serve_forever()
+    print(f'Taioé local em http://localhost:{PORTA}/  (Ctrl+C para parar)')
+    http.server.ThreadingHTTPServer(('127.0.0.1', PORTA), H).serve_forever()

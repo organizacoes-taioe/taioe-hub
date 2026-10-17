@@ -1,5 +1,5 @@
 // Worker só com arquivos estáticos. Publica todo o taioe.com.br, menos
-// /cards e /biblioteca, que são routes dos outros repositórios (README).
+// /cards, /biblioteca e /biblia, que são routes dos outros repositórios (README).
 {
   "name": "taioe-hub",
   "compatibility_date": "2026-09-25",
