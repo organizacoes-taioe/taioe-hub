@@ -46,3 +46,10 @@ main.revisao { max-width: 760px; }
 .botao:disabled { opacity: .6; cursor: default; }
 .botao.secundario { background: transparent; color: var(--acento); border: 1px solid var(--acento); font-weight: 600; font-size: .9rem; }
 .pe-secao { margin: 6px 0 0; }
+
+.caso { background: var(--fundo); }
+.caso .sentido { color: var(--apagado); font-weight: 400; letter-spacing: 0; }
+.hebraico { font-style: italic; color: var(--apagado); margin: 0 0 6px; }
+.versoes { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; }
+.versoes dt { font-weight: 700; font-size: .85rem; color: var(--apagado); }
+.versoes dd { margin: 0; }

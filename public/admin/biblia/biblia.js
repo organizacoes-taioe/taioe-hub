@@ -1,6 +1,7 @@
 /* /admin/biblia/: a revisão de cada capítulo da Bíblia Taioé (pedido do Gere, 17/10/2026). Ele
    avalia uma a uma as escolhas de tradução, as notas, a divisão e os comentários: aprova, altera
-   ou exclui, e explica a mudança, para o Claude melhorar os capítulos seguintes.
+   ou exclui, e explica a mudança, para o Claude melhorar os capítulos seguintes. Cada resposta
+   grava sozinha, no clique ou logo depois de ele parar de digitar (pedido dele, 17/10).
    O hub é público: o conteúdo vem de conta.paginas_privadas (slug 'biblia', gerado pelo
    taioe-biblia em dados/paginas/biblia.json do taioe-infra), e as respostas vão para
    conta.respostas_privadas, que só o revisor geral lê e grava. O Claude as lê pelo workflow
@@ -56,12 +57,13 @@
     cartoes.forEach(function (c) { c.atualizar(); });
     resumir();
   }
+  var ESPERA = 900;   // ms depois da última tecla
 
   // ------------------------------------------------------------ um cartão de resposta
 
   /* opcoes: [{ valor, rotulo, texto (prefill do campo), campo: true|false, select: [...] }]
-     Cada cartão tem as opções em botões de rádio, um campo de texto (quando a opção pede), a
-     explicação e o botão Gravar. */
+     Cada cartão tem as opções em botões de rádio, um campo de texto (quando a opção pede) e a
+     explicação. Grava ao escolher uma opção e, nos campos, um pouco depois da última tecla. */
   function formulario(itemId, opcoes, secao) {
     var f = el('form', 'resposta');
     var nome = 'r-' + itemId.replace(/[^a-z0-9]/g, '-');
@@ -73,7 +75,7 @@
     expl.placeholder = 'Por quê? (opcional; ajuda a melhorar os próximos capítulos)';
     expl.setAttribute('aria-label', 'Explicação');
     var estado = el('p', 'estado pequeno');
-    var botao = el('button', 'botao', 'Gravar'); botao.type = 'submit';
+    var editando = false, gravando = false, deNovo = false, relogio = null;
 
     opcoes.forEach(function (o, i) {
       var l = el('label', 'opcao');
@@ -82,7 +84,7 @@
       var t = el('span', 'opcao-texto'); comItalico(t, o.rotulo); l.appendChild(t);
       if (o.recomendada) l.appendChild(el('span', 'etiqueta', 'recomendada'));
       if (o.nota) l.appendChild(comItalico(el('span', 'opcao-nota'), o.nota));
-      r.addEventListener('change', mudou);
+      r.addEventListener('change', function () { mudou(); salvar(); });
       radios.appendChild(l);
     });
     function escolhida() {
@@ -101,23 +103,47 @@
       }
     }
     f.appendChild(radios); f.appendChild(campo); f.appendChild(sel); f.appendChild(expl);
-    var pe = el('div', 'pe'); pe.appendChild(botao); pe.appendChild(estado); f.appendChild(pe);
+    var pe = el('div', 'pe'); pe.appendChild(estado); f.appendChild(pe);
+    f.addEventListener('submit', function (e) { e.preventDefault(); });
 
-    f.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var o = escolhida();
-      if (!o) { estado.textContent = 'Escolha uma das opções.'; return; }
-      var texto = o.select ? 'mover:' + sel.value : (o.campo ? campo.value.trim() : (o.valorTexto || ''));
-      if (o.campo && !texto) { estado.textContent = 'Escreva o texto.'; campo.focus(); return; }
-      botao.disabled = true; estado.textContent = 'Gravando…';
-      try { await gravar([{ item: itemId, decisao: o.valor, texto: texto, explicacao: expl.value.trim() }]); }
-      catch (err) { estado.textContent = 'Não gravou: ' + H.mensagemDeErro(err); }
-      botao.disabled = false;
+    function digitou() {
+      editando = true;
+      estado.textContent = 'Gravando…';
+      clearTimeout(relogio);
+      relogio = setTimeout(salvar, ESPERA);
+    }
+    [campo, expl].forEach(function (t) {
+      t.addEventListener('input', digitou);
+      t.addEventListener('blur', function () { if (relogio) salvar(); });
     });
+    sel.addEventListener('change', salvar);
+
+    // Uma gravação por vez; o que mudar enquanto grava sai logo depois.
+    async function salvar() {
+      clearTimeout(relogio); relogio = null;
+      if (gravando) { deNovo = true; return; }
+      var o = escolhida();
+      if (!o) { editando = false; estado.textContent = expl.value.trim() ? 'Escolha uma das opções para gravar.' : 'Ainda sem resposta.'; return; }
+      var texto = o.select ? 'mover:' + sel.value : (o.campo ? campo.value.trim() : (o.valorTexto || ''));
+      if (o.campo && !texto) { editando = false; estado.textContent = 'Escreva o texto para gravar.'; return; }
+      gravando = true; estado.textContent = 'Gravando…';
+      var erro = null;
+      try { await gravar([{ item: itemId, decisao: o.valor, texto: texto, explicacao: expl.value.trim() }]); }
+      catch (err) { erro = err; }
+      gravando = false;
+      if (deNovo) { deNovo = false; salvar(); return; }
+      editando = false;
+      if (erro) estado.textContent = 'Não gravou: ' + H.mensagemDeErro(erro) + ' (tento de novo na próxima mudança)';
+      else if (respostas[itemId]) mostrarEstado(respostas[itemId]);
+    }
+    function mostrarEstado(r) {
+      estado.textContent = 'Gravado em ' + quando(r.atualizado_em) + (r.lida ? ' · já aplicado pelo Claude' : ' · o Claude ainda não aplicou');
+    }
 
     function atualizar() {
       var r = respostas[itemId];
       f.classList.toggle('respondido', !!r);
+      if (editando || gravando) return;   // não apagar o que ele está digitando
       if (!r) { estado.textContent = 'Ainda sem resposta.'; return; }
       var i = -1, mover = /^mover:/.test(r.texto || '');
       opcoes.forEach(function (o, k) {
@@ -130,7 +156,7 @@
       if (o && o.campo) campo.value = r.texto || '';
       if (o && o.select) sel.value = String(r.texto || '').replace(/^mover:/, '');
       expl.value = r.explicacao || '';
-      estado.textContent = 'Gravado em ' + quando(r.atualizado_em) + (r.lida ? ' · já aplicado pelo Claude' : ' · o Claude ainda não aplicou');
+      mostrarEstado(r);
     }
     cartoes.push({ id: itemId, secao: secao, atualizar: atualizar });
     return f;
@@ -179,6 +205,29 @@
       { valor: 'comentar', rotulo: 'Quero outra coisa', campo: true, texto: '', placeholder: 'O que você quer' }
     ], secao));
     return c;
+  }
+
+  // Os versículos de um estudo de palavra, cada um como ficaria em cada opção. Só leitura.
+  function itemCasos(x) {
+    var w = el('div', 'casos');
+    (x.casos || []).forEach(function (k) {
+      var c = el('article', 'cartao caso');
+      var cab = el('p', 'cartao-ref', k.ref);
+      if (k.sentido) cab.appendChild(el('span', 'sentido', ' · ' + k.sentido));
+      c.appendChild(cab);
+      if (k.hebraico) c.appendChild(el('p', 'hebraico', k.hebraico));
+      var dl = el('dl', 'versoes');
+      function linha(rotulo, t) {
+        if (!t) return;
+        dl.appendChild(el('dt', null, rotulo));
+        dl.appendChild(comItalico(el('dd'), t));
+      }
+      linha('Hoje', k.atual);
+      (x.opcoes || []).forEach(function (o) { linha(o.rotulo, k[o.id]); });
+      c.appendChild(dl);
+      w.appendChild(c);
+    });
+    return w;
   }
 
   function itemTema(x, secao, temas) {
@@ -237,6 +286,7 @@
       if (x.tipo === 'nota') w.appendChild(itemNota(x, sid));
       else if (x.tipo === 'escolha') w.appendChild(itemEscolha(x, sid));
       else if (x.tipo === 'tema') w.appendChild(itemTema(x, sid, itens));
+      else if (x.tipo === 'casos') w.appendChild(itemCasos(x));
       else w.appendChild(itemAvaliacao(x, sid));
     });
     var b = el('button', 'botao secundario', 'Aprovar todos os que ficaram sem resposta nesta seção');
@@ -253,8 +303,9 @@
       b.disabled = false;
     });
     var pe = el('p', 'pe-secao'); pe.appendChild(b); w.appendChild(pe);
+    var meus = cartoes.filter(function (c) { return c.secao === sid; });
+    if (!meus.length) { cont.remove(); pe.remove(); return w; }   // seção só de leitura
     var contador = { atualizar: function () {
-      var meus = cartoes.filter(function (c) { return c.secao === sid; });
       var feitos = meus.filter(function (c) { return respostas[c.id]; }).length;
       cont.textContent = feitos + ' de ' + meus.length + ' respondidos';
       cont.classList.toggle('completo', feitos === meus.length);
@@ -290,7 +341,7 @@
       var w = el('section', 'capitulo');
       var h = el('h2', 'titulo-cap', cap.rotulo); w.appendChild(h);
       var p = el('p', 'pequeno');
-      if (seguro(cap.url)) p.appendChild(link(cap.url, 'Abrir o capítulo'));
+      if (seguro(cap.url)) p.appendChild(link(cap.url, cap.rotuloUrl || 'Abrir o capítulo'));
       if (cap.estado) p.appendChild(document.createTextNode(' · ' + cap.estado));
       w.appendChild(p);
       var nav = el('p', 'indice-cap');
