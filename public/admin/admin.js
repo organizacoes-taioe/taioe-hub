@@ -29,15 +29,35 @@
     if (n) alvo.classList.add('espera');
   }
 
+  // Quantos itens da revisão da Bíblia Taioé ainda não têm resposta dele (/admin/biblia/).
+  async function contarBiblia(alvo) {
+    var r = await sb.schema('conta').from('paginas_privadas').select('dados').eq('slug', 'biblia').maybeSingle();
+    if (r.error || !r.data) return;
+    var ids = [];
+    ((r.data.dados || {}).capitulos || []).forEach(function (c) {
+      (c.secoes || []).forEach(function (s) {
+        (s.itens || []).forEach(function (i) { ids.push(i.id); (i.comentarios || []).forEach(function (m) { ids.push(m.id); }); });
+      });
+    });
+    var rr = await sb.schema('conta').from('respostas_privadas').select('item').eq('pagina', 'biblia');
+    if (rr.error) return;
+    var feitos = {};
+    (rr.data || []).forEach(function (x) { feitos[x.item] = true; });
+    var n = ids.filter(function (i) { return !feitos[i]; }).length;
+    alvo.textContent = n ? (n === 1 ? '1 espera você' : n + ' esperam você') : 'nada esperando';
+    alvo.hidden = false;
+    if (n) alvo.classList.add('espera');
+  }
+
   function item(x) {
     var w = el('div', 'item'), href = seguro(x.href);
     var a = el(href ? 'a' : 'div', 'caminho');
     if (href) a.href = href;
     var nome = el('span', 'caminho-nome', x.titulo);
     if (x.previa) nome.appendChild(el('span', 'etiqueta', 'prévia'));
-    if (x.contar === 'curadoria') {
+    if (x.contar === 'curadoria' || x.contar === 'biblia') {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
-      contarCuradoria(c);
+      (x.contar === 'curadoria' ? contarCuradoria : contarBiblia)(c);
     }
     a.appendChild(nome);
     if (x.texto) a.appendChild(el('span', 'caminho-texto', x.texto));
