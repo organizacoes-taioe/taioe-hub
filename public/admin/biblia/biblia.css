@@ -28,6 +28,9 @@ main.revisao { max-width: 760px; }
 .tema-cab { margin-bottom: 4px; }
 .comentarios { margin-top: 12px; }
 .comentarios .cartao { background: var(--fundo); }
+.aviso-corte { border-color: var(--acento); }
+.aviso-corte .corte { color: var(--apagado); }
+.aviso-texto { border-left: 3px solid var(--acento); padding-left: 10px; margin: 8px 0; }
 .tema-texto .cartao-texto { font-size: 1.05rem; margin: 0 0 4px; }
 
 .resposta { border-top: 1px dashed var(--borda); margin-top: 10px; padding-top: 10px; }
@@ -43,10 +46,6 @@ main.revisao { max-width: 760px; }
 .pe { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .estado { color: var(--apagado); margin: 0; }
 .respondido .estado { color: var(--ok); }
-.botao { font: inherit; font-weight: 700; cursor: pointer; border: 0; border-radius: 999px; padding: 7px 18px; background: var(--acento); color: var(--acento-texto); }
-.botao:disabled { opacity: .6; cursor: default; }
-.botao.secundario { background: transparent; color: var(--acento); border: 1px solid var(--acento); font-weight: 600; font-size: .9rem; }
-.pe-secao { margin: 6px 0 0; }
 
 .caso { background: var(--fundo); }
 .caso .sentido { color: var(--apagado); font-weight: 400; letter-spacing: 0; }

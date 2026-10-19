@@ -4,7 +4,9 @@
    - /admin/biblia-comentarios/ (pedido dele, 19/10): à parte, para não misturar com o que é
      prioritário, cada título de tema, cada resumo de tema e cada comentário dos Padres (aprovar,
      editar; os comentários também excluir, e a edição é só para cortar).
-   A página diz qual é no <body data-pagina>. Sem textos explicativos (ele é o único leitor, 19/10).
+   A página diz qual é no <body data-pagina>. Sem textos explicativos (ele é o único leitor, 19/10)
+   e sem «aprovar todos»: ele responde item por item (19/10). Quando um corte dele num comentário
+   muda o sentido, o comentário volta com o aviso e a sugestão do Claude (tipo 'comentario-aviso').
    Cada resposta grava sozinha, no clique ou logo depois de ele parar de digitar (17/10).
    O hub é público: o conteúdo vem de conta.paginas_privadas (slugs 'biblia' e 'biblia-comentarios',
    gerados pelo taioe-biblia em dados/paginas/ do taioe-infra), e as respostas vão para
@@ -247,6 +249,34 @@
     return a;
   }
 
+  // Um corte dele que o Claude achou que muda o sentido: o corte, o aviso e a sugestão. O site já
+  // mostra a sugestão; ele aprova, fica com o corte dele, edita ou exclui.
+  function itemAvisoCorte(x, secao) {
+    var a = el('article', 'cartao comentario aviso-corte');
+    var aut = el('p', 'autoria');
+    aut.appendChild(el('b', null, x.autor));
+    aut.appendChild(el('br'));
+    aut.appendChild(el('i', null, x.obra));
+    if (x.passagem) aut.appendChild(document.createTextNode(', ' + x.passagem));
+    if (seguro(x.link)) { aut.appendChild(document.createTextNode(' · ')); aut.appendChild(link(x.link, 'original')); }
+    a.appendChild(aut);
+    a.appendChild(el('p', 'cartao-ref', 'Seu corte'));
+    a.appendChild(paragrafos('cartao-texto corte', x.corte));
+    var av = el('div', 'aviso-texto');
+    av.appendChild(el('p', 'cartao-ref', 'Aviso'));
+    av.appendChild(paragrafos('cartao-texto', x.aviso));
+    a.appendChild(av);
+    a.appendChild(el('p', 'cartao-ref', 'Sugestão'));
+    a.appendChild(paragrafos('cartao-texto', x.sugestao));
+    a.appendChild(formulario(x.id, [
+      { valor: 'aprovar', rotulo: 'Aprovar a sugestão' },
+      { valor: 'escolher', valorTexto: 'corte', rotulo: 'Manter o meu corte' },
+      { valor: 'alterar', rotulo: 'Editar', campo: true, texto: x.sugestao },
+      { valor: 'excluir', rotulo: 'Excluir o comentário' }
+    ], secao));
+    return a;
+  }
+
   // Os versículos de um estudo de palavra, cada um como ficaria em cada opção. Só leitura.
   function itemCasos(x) {
     var w = el('div', 'casos');
@@ -335,24 +365,11 @@
       else if (x.tipo === 'tema-titulo') w.appendChild(itemTemaTexto(x, sid, 'Título do tema'));
       else if (x.tipo === 'tema-resumo') w.appendChild(itemTemaTexto(x, sid, 'Texto do tema'));
       else if (x.tipo === 'comentario') w.appendChild(itemComentario(x, sid));
+      else if (x.tipo === 'comentario-aviso') w.appendChild(itemAvisoCorte(x, sid));
       else w.appendChild(itemAvaliacao(x, sid));
     });
-    var b = el('button', 'botao secundario', 'Aprovar todos os que ficaram sem resposta nesta seção');
-    b.type = 'button';
-    b.addEventListener('click', async function () {
-      var faltam = cartoes.filter(function (c) { return c.secao === sid && !respostas[c.id]; });
-      if (!faltam.length) { b.textContent = 'Nada sem resposta nesta seção'; return; }
-      var escolhas = faltam.filter(function (c) { return /:escolha:/.test(c.id); }).length;
-      if (escolhas) { alert('Há ' + escolhas + ' escolha(s) de tradução sem resposta: essas precisam de uma opção.'); return; }
-      if (!confirm('Aprovar ' + faltam.length + ' item(ns) sem resposta em «' + s.titulo + '»?')) return;
-      b.disabled = true;
-      try { await gravar(faltam.map(function (c) { return { item: c.id, decisao: 'aprovar' }; })); }
-      catch (err) { alert('Não gravou: ' + H.mensagemDeErro(err)); }
-      b.disabled = false;
-    });
-    var pe = el('p', 'pe-secao'); pe.appendChild(b); w.appendChild(pe);
     var meus = cartoes.filter(function (c) { return c.secao === sid; });
-    if (!meus.length) { cont.remove(); pe.remove(); return w; }   // seção só de leitura
+    if (!meus.length) { cont.remove(); return w; }   // seção só de leitura
     var contador = { atualizar: function () {
       var feitos = meus.filter(function (c) { return respostas[c.id]; }).length;
       cont.textContent = feitos + ' de ' + meus.length + ' respondidos';
