@@ -29,20 +29,25 @@
     if (n) alvo.classList.add('espera');
   }
 
-  // Quantos itens da revisão da Bíblia Taioé ainda não têm resposta dele (/admin/biblia/).
-  async function contarBiblia(alvo) {
-    var r = await sb.schema('conta').from('paginas_privadas').select('dados').eq('slug', 'biblia').maybeSingle();
+  // Quantos itens de uma página de revisão da Bíblia Taioé ainda não têm resposta dele
+  // (/admin/biblia/ e /admin/biblia-comentarios/; o slug é o valor de «contar»).
+  async function contarBiblia(alvo, slug) {
+    var r = await sb.schema('conta').from('paginas_privadas').select('dados').eq('slug', slug).maybeSingle();
     if (r.error || !r.data) return;
     var ids = [];
     ((r.data.dados || {}).capitulos || []).forEach(function (c) {
       (c.secoes || []).forEach(function (s) {
-        (s.itens || []).forEach(function (i) { ids.push(i.id); (i.comentarios || []).forEach(function (m) { ids.push(m.id); }); });
+        (s.itens || []).forEach(function (i) { if (i.tipo !== 'casos') ids.push(i.id); (i.comentarios || []).forEach(function (m) { ids.push(m.id); }); });
       });
     });
-    var rr = await sb.schema('conta').from('respostas_privadas').select('item').eq('pagina', 'biblia');
-    if (rr.error) return;
     var feitos = {};
-    (rr.data || []).forEach(function (x) { feitos[x.item] = true; });
+    // Em páginas de 1000: é o máximo que a API devolve de uma vez.
+    for (var de = 0; ; de += 1000) {
+      var rr = await sb.schema('conta').from('respostas_privadas').select('item').eq('pagina', slug).order('item').range(de, de + 999);
+      if (rr.error) return;
+      (rr.data || []).forEach(function (x) { feitos[x.item] = true; });
+      if ((rr.data || []).length < 1000) break;
+    }
     var n = ids.filter(function (i) { return !feitos[i]; }).length;
     alvo.textContent = n ? (n === 1 ? '1 espera você' : n + ' esperam você') : 'nada esperando';
     alvo.hidden = false;
@@ -55,9 +60,9 @@
     if (href) a.href = href;
     var nome = el('span', 'caminho-nome', x.titulo);
     if (x.previa) nome.appendChild(el('span', 'etiqueta', 'prévia'));
-    if (x.contar === 'curadoria' || x.contar === 'biblia') {
+    if (x.contar === 'curadoria' || x.contar === 'biblia' || x.contar === 'biblia-comentarios') {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
-      (x.contar === 'curadoria' ? contarCuradoria : contarBiblia)(c);
+      if (x.contar === 'curadoria') contarCuradoria(c); else contarBiblia(c, x.contar);
     }
     a.appendChild(nome);
     if (x.texto) a.appendChild(el('span', 'caminho-texto', x.texto));
