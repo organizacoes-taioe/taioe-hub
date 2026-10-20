@@ -80,11 +80,22 @@
     } catch (e) {}
   }
   // Devolve true se saiu. Com todos = true e sem rede, NÃO apaga nada e devolve false:
-  // quem perdeu o celular precisa saber que a saída global não aconteceu.
+  // quem perdeu o celular precisa saber que a saída global não aconteceu. O signOut global do
+  // supabase-js 2.117.2 apaga a sessão deste aparelho mesmo quando o servidor não respondeu, e
+  // aí a tentativa seguinte "dava certo" sem pedir nada ao servidor; por isso a saída global é
+  // pedida antes, com o token da sessão, e só com ela confirmada a sessão local sai.
   async function sair(todos) {
-    var r;
-    try { r = await cliente().auth.signOut({ scope: todos ? 'global' : 'local' }); } catch (e) { r = { error: e }; }
-    if (todos && r && r.error) return false;
+    if (todos) {
+      try {
+        var lida = await cliente().auth.getSession();
+        var sessao = lida && lida.data && lida.data.session;
+        if (!sessao) return false;                          // sem sessão válida, não há como pedir
+        var g = await cliente().auth.admin.signOut(sessao.access_token, 'global');
+        // 401, 403 e 404: o servidor já não conhece a sessão (o supabase-js também aceita)
+        if (g.error && [401, 403, 404].indexOf(g.error.status) < 0) return false;
+      } catch (e) { return false; }
+    }
+    try { await cliente().auth.signOut({ scope: 'local' }); } catch (e) {}
     limparSessaoLocal();                                    // sem rede o signOut local pode não apagar
     avisarSaida();                                          // a própria aba não recebe o evento storage
     return true;
