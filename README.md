@@ -47,7 +47,7 @@ Depois de mexer em textos ou telas: `node hub/ferramentas/teste-i18n.mjs` (chave
 | arquivo | sha256 |
 |---|---|
 | `public/comum/vendor/supabase-js-2.117.2.js` (UMD do npm, integridade conferida) | `59d39487c3589843b410322d8a3d562ce022aba1e5ccb16898ef3fb2a0da2ecd` |
-| `public/comum/taioe-sessao.js` (contrato v1) | `f5e6246142d41d3bff5e7c8b08e82284690f3a492169593b938a6347788cc8e3` |
+| `public/comum/taioe-sessao.js` (contrato v1) | `a1f94e2ca73a7ee9aa5f8ec3a8dba939b1adaafe441d149896aa7bb2013942ca` |
 
 Nos apps, as cópias ficam em `public/<app>/vendor/` e `public/<app>/js/`. O workflow **Cópias** de cada repositório confere estes valores; ao mudar um arquivo, mude o valor aqui e nos três workflows, no mesmo dia.
 
