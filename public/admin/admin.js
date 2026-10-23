@@ -29,8 +29,8 @@
     if (n) alvo.classList.add('espera');
   }
 
-  // Quantos itens de uma página de revisão da Bíblia Taioé ainda não têm resposta dele
-  // (/admin/biblia/ e /admin/biblia-comentarios/; o slug é o valor de «contar»).
+  // Quantos itens de uma página de revisão ainda não têm resposta dele (/admin/biblia/,
+  // /admin/biblia-comentarios/, /admin/nao-ficcao/ e /admin/nao-ficcao-comentarios/; o slug é o valor de «contar»).
   async function contarBiblia(alvo, slug) {
     var r = await sb.schema('conta').from('paginas_privadas').select('dados').eq('slug', slug).maybeSingle();
     if (r.error || !r.data) return;
@@ -60,7 +60,7 @@
     if (href) a.href = href;
     var nome = el('span', 'caminho-nome', x.titulo);
     if (x.previa) nome.appendChild(el('span', 'etiqueta', 'prévia'));
-    if (x.contar === 'curadoria' || x.contar === 'biblia' || x.contar === 'biblia-comentarios') {
+    if (x.contar === 'curadoria' || ['biblia', 'biblia-comentarios', 'nao-ficcao', 'nao-ficcao-comentarios'].indexOf(x.contar) >= 0) {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
       if (x.contar === 'curadoria') contarCuradoria(c); else contarBiblia(c, x.contar);
     }

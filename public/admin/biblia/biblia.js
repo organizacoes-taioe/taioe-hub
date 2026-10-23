@@ -1,6 +1,8 @@
 /* As duas páginas de revisão da Bíblia Taioé (só o revisor geral), com o mesmo script:
    - /admin/biblia/ (pedido do Gere, 17/10/2026): escolhas de tradução, notas, divisão e registro
      de cada capítulo; ele aprova, altera ou exclui, e explica a mudança;
+   - /admin/nao-ficcao/ e /admin/nao-ficcao-comentarios/ (pedido dele, 23/10): as mesmas duas
+     páginas para os livros comentados da Não-ficção da Biblioteca (a Apologia de Sócrates);
    - /admin/biblia-comentarios/ (pedido dele, 19/10): à parte, para não misturar com o que é
      prioritário, cada título de tema, cada resumo de tema e cada comentário dos Padres (aprovar,
      editar; os comentários também excluir, e a edição é só para cortar).
@@ -17,7 +19,7 @@
   var H = TaioeHub, sb = TaioeSessao.cliente();
   var PAGINA = document.body.getAttribute('data-pagina') || 'biblia';
   // Na dos comentários, o «por quê?» só aparece quando ele não aprova.
-  var EXPLICAR_SO_MUDANCA = PAGINA === 'biblia-comentarios';
+  var EXPLICAR_SO_MUDANCA = PAGINA === 'biblia-comentarios' || PAGINA === 'nao-ficcao-comentarios';
   var respostas = {};      // item → { decisao, texto, explicacao, atualizado_em, lida }
   var cartoes = [];        // { id, secao, atualizar() }
 
