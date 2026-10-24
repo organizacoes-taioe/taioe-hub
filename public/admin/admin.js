@@ -16,39 +16,13 @@
   // Só caminhos do próprio site ou https.
   function seguro(u) { return /^(\/(?!\/)|https:\/\/)/.test(u || '') ? u : ''; }
 
-  // Quantos itens da curadoria esperam o Gere (comentários e contestações marcados para ele).
-  async function contarCuradoria(alvo) {
-    var tabelas = ['comentarios', 'contestacoes'], n = 0;
-    for (var i = 0; i < tabelas.length; i++) {
-      var r = await sb.schema('cards').from(tabelas[i]).select('id', { count: 'exact', head: true }).eq('para_gere', true);
-      if (r.error) return;
-      n += r.count || 0;
-    }
-    alvo.textContent = n ? (n === 1 ? '1 espera você' : n + ' esperam você') : 'nada esperando';
-    alvo.hidden = false;
-    if (n) alvo.classList.add('espera');
-  }
-
-  // Quantos itens de uma página de revisão ainda não têm resposta dele (/admin/biblia/,
-  // /admin/biblia-comentarios/, /admin/nao-ficcao/ e /admin/nao-ficcao-comentarios/; o slug é o valor de «contar»).
-  async function contarBiblia(alvo, slug) {
-    var r = await sb.schema('conta').from('paginas_privadas').select('dados').eq('slug', slug).maybeSingle();
-    if (r.error || !r.data) return;
-    var ids = [];
-    ((r.data.dados || {}).capitulos || []).forEach(function (c) {
-      (c.secoes || []).forEach(function (s) {
-        (s.itens || []).forEach(function (i) { if (i.tipo !== 'casos') ids.push(i.id); (i.comentarios || []).forEach(function (m) { ids.push(m.id); }); });
-      });
-    });
-    var feitos = {};
-    // Em páginas de 1000: é o máximo que a API devolve de uma vez.
-    for (var de = 0; ; de += 1000) {
-      var rr = await sb.schema('conta').from('respostas_privadas').select('item').eq('pagina', slug).order('item').range(de, de + 999);
-      if (rr.error) return;
-      (rr.data || []).forEach(function (x) { feitos[x.item] = true; });
-      if ((rr.data || []).length < 1000) break;
-    }
-    var n = ids.filter(function (i) { return !feitos[i]; }).length;
+  // Quantas pendências esperam o Gere, somando os tipos de /admin/pendencias/ (fila.js).
+  async function contarPendencias(alvo) {
+    var n = 0;
+    try {
+      (await Promise.all(TaioeFila.TIPOS.map(function (t) { return TaioeFila.carregar(sb, t.id); })))
+        .forEach(function (c) { n += TaioeFila.contar(c).faltam; });
+    } catch (e) { return; }
     alvo.textContent = n ? (n === 1 ? '1 espera você' : n + ' esperam você') : 'nada esperando';
     alvo.hidden = false;
     if (n) alvo.classList.add('espera');
@@ -60,9 +34,9 @@
     if (href) a.href = href;
     var nome = el('span', 'caminho-nome', x.titulo);
     if (x.previa) nome.appendChild(el('span', 'etiqueta', 'prévia'));
-    if (x.contar === 'curadoria' || ['biblia', 'biblia-comentarios', 'nao-ficcao', 'nao-ficcao-comentarios'].indexOf(x.contar) >= 0) {
+    if (x.contar === 'pendencias') {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
-      if (x.contar === 'curadoria') contarCuradoria(c); else contarBiblia(c, x.contar);
+      contarPendencias(c);
     }
     a.appendChild(nome);
     if (x.texto) a.appendChild(el('span', 'caminho-texto', x.texto));

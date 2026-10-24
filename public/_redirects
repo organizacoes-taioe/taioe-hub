@@ -1,0 +1,9 @@
+# As páginas de revisão viraram tipos de /admin/pendencias/ (pedido do Gere, 24/10/2026).
+/admin/biblia/                   /admin/pendencias/#biblia                   301
+/admin/biblia                    /admin/pendencias/#biblia                   301
+/admin/biblia-comentarios/       /admin/pendencias/#biblia-comentarios       301
+/admin/biblia-comentarios        /admin/pendencias/#biblia-comentarios       301
+/admin/nao-ficcao/               /admin/pendencias/#nao-ficcao               301
+/admin/nao-ficcao                /admin/pendencias/#nao-ficcao               301
+/admin/nao-ficcao-comentarios/   /admin/pendencias/#nao-ficcao-comentarios   301
+/admin/nao-ficcao-comentarios    /admin/pendencias/#nao-ficcao-comentarios   301

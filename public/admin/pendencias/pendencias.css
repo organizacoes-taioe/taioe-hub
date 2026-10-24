@@ -1,0 +1,72 @@
+/* /admin/pendencias/ (só o revisor geral): a fila do que espera a resposta do Gere. Usa os tokens de /comum/estilo.css. */
+main.revisao { max-width: 760px; padding-top: 0; }
+
+/* A barra do topo, fixa ao rolar: voltar, o tipo, quantas faltam e «Próxima». */
+.barra { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; background: var(--fundo); padding: 12px 0 10px; border-bottom: 1px solid var(--borda); margin: 0 0 18px; }
+.barra .voltar { text-decoration: none; font-size: .95rem; white-space: nowrap; }
+.escolher-tipo { flex: 1 1 220px; margin: 0; font-weight: 400; }
+.escolher-tipo select { width: 100%; padding: 8px 10px; font-weight: 700; }
+.faltam { font-weight: 600; color: var(--apagado); white-space: nowrap; }
+.barra button.proxima { margin: 0; padding: 8px 14px; white-space: nowrap; }
+/* No celular, uma linha só: a seta de voltar, o tipo (com quantas faltam) e «Próxima». */
+@media (max-width: 600px) {
+  .barra { flex-wrap: nowrap; gap: 10px; padding: 10px 0 8px; }
+  .barra .voltar { font-size: 1.3rem; }
+  .barra .voltar .palavra, .faltam { display: none; }
+  .escolher-tipo { flex: 1 1 auto; min-width: 0; }
+  .barra button.proxima { padding: 8px 10px; }
+}
+
+.capitulo { margin: 18px 0 34px; }
+.titulo-cap { font-size: 1.4rem; margin: 0 0 4px; }
+.secao { margin: 22px 0; }
+.titulo-secao { font-size: 1.15rem; margin: 0; padding-bottom: 6px; border-bottom: 1px solid var(--borda); }
+.sub-secao { color: var(--apagado); margin: 6px 0 10px; }
+.secao-texto p { margin: 0 0 10px; color: var(--apagado); }
+.vazio { color: var(--apagado); margin: 28px 0; }
+
+.respondidas { margin: 36px 0 20px; border-top: 2px solid var(--borda); padding-top: 14px; }
+.respondidas > summary { cursor: pointer; font-weight: 700; color: var(--apagado); }
+.historico { margin-top: 30px; }
+
+.cartao { background: var(--caixa); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; margin: 12px 0 14px; }
+.cartao h3 { font-size: 1.05rem; margin: 0 0 6px; }
+.cartao-ref { color: var(--acento); font-size: .82rem; font-weight: 700; letter-spacing: .03em; margin: 0 0 6px; }
+.versiculo { font-style: italic; color: var(--apagado); margin: 0 0 8px; border-left: 3px solid var(--borda); padding-left: 10px; }
+.cartao-texto p { margin: 0 0 8px; }
+.autoria { font-size: .88rem; color: var(--apagado); margin: 4px 0 8px; }
+.autoria b { color: var(--texto); }
+
+.aviso-corte { border-color: var(--acento); }
+.aviso-corte .corte { color: var(--apagado); }
+.aviso-texto { border-left: 3px solid var(--acento); padding-left: 10px; margin: 8px 0; }
+.tema-texto .cartao-texto { font-size: 1.05rem; margin: 0 0 4px; }
+
+/* Comentário de usuário: o card, o que a pessoa disse, o que decidir e a sugestão. */
+.card-do-item { font-weight: 700; margin: 0 0 8px; }
+.usuario .rotulo { font-size: .82rem; font-weight: 700; color: var(--apagado); margin: 10px 0 4px; }
+.citado { border-left: 3px solid var(--borda); padding-left: 10px; }
+.decidir p { font-weight: 600; }
+
+.resposta { border-top: 1px dashed var(--borda); margin-top: 10px; padding-top: 10px; }
+.resposta.respondido { border-top-style: solid; border-top-color: var(--ok); }
+.cartao.respondido { border-color: var(--ok); }
+.opcoes { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.opcao { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; cursor: pointer; font-weight: 400; }
+.opcao input { flex: none; margin: 0; transform: translateY(1px); }
+.opcao-texto { flex: 1; min-width: 60%; }
+.opcao-nota { flex-basis: 100%; padding-left: 22px; color: var(--apagado); font-size: .88rem; }
+.etiqueta { display: inline-block; padding: 0 8px; border: 1px solid var(--acento); border-radius: 999px; font-size: .72rem; font-weight: 700; color: var(--acento); }
+.resposta textarea, .resposta select { width: 100%; font: inherit; color: var(--texto); background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; }
+.resposta textarea:focus, .resposta select:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
+.resposta button.enviar { margin: 0 0 8px; padding: 8px 16px; }
+.pe { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.estado { color: var(--apagado); margin: 0; }
+.respondido .estado { color: var(--ok); }
+
+.caso { background: var(--fundo); }
+.caso .sentido { color: var(--apagado); font-weight: 400; letter-spacing: 0; }
+.hebraico { font-style: italic; color: var(--apagado); margin: 0 0 6px; }
+.versoes { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; }
+.versoes dt { font-weight: 700; font-size: .85rem; color: var(--apagado); }
+.versoes dd { margin: 0; }
