@@ -75,7 +75,9 @@ for (const p of todos.filter((f) => f.endsWith('.html'))) {
   if (/<style[\s>]/i.test(html) || /\sstyle\s*=/i.test(html)) falha(`${nome}: estilo inline`);
   if (/\son[a-z]+\s*=/i.test(html)) falha(`${nome}: atributo on…= (script inline)`);
   if (!/<footer class="rodape">[^]*<select data-seletor-lingua>[^]*<\/footer>/.test(html)) falha(`${nome}: sem seletor de língua no rodapé`);
-  const scripts = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1]);
+  // o sessao-guardada.js (no <head>, sem textos) não depende do i18n
+  const scripts = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1])
+    .filter((s) => s !== '/comum/sessao-guardada.js');
   if (scripts[0] !== '/comum/textos-i18n.js' || scripts[1] !== '/comum/i18n.js') falha(`${nome}: textos-i18n.js e i18n.js devem vir antes dos outros scripts`);
 
   const pilha = [];
