@@ -1,0 +1,26 @@
+/* /admin/sugestoes/ (só o revisor geral): os próximos livros da Biblioteca. Usa os tokens de
+   /comum/estilo.css e, de /admin/pendencias/pendencias.css, a barra do topo, o cartão e os blocos do fim. */
+.livro h3 { display: flex; gap: 8px; align-items: baseline; font-size: 1.1rem; }
+.livro .posicao { flex: none; min-width: 1.6em; color: var(--acento); font-weight: 700; }
+.livro .posicao:empty { display: none; }
+.ficha { color: var(--apagado); font-size: .9rem; margin: 0 0 6px; }
+.linha-livro { margin: 0 0 6px; }
+.aviso-livro { font-size: .88rem; border-left: 3px solid var(--acento); padding-left: 10px; margin: 8px 0; }
+.link-livro { margin: 4px 0 0; }
+.falha-livro { color: var(--erro); margin: 8px 0 0; }
+
+.acoes { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 10px; }
+.acoes button { margin: 0; padding: 8px 18px; }
+.depois { border-top: 1px solid var(--ok); margin-top: 10px; padding-top: 8px; }
+.estado-livro { margin: 0 0 8px; }
+.marca-resposta { font-weight: 700; color: var(--ok); }
+.recusado .marca-resposta { color: var(--apagado); }
+.cartao.recusado { border-color: var(--borda); opacity: .75; }
+.depois textarea { width: 100%; font: inherit; color: var(--texto); background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; margin: 0; }
+.depois textarea:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
+
+.lista-fim { margin: 12px 0 0; padding-left: 1.4em; }
+.lista-fim li { margin: .5em 0; }
+.lista-fim .ficha { font-size: .88rem; }
+.lista-fim .porque-dado { display: block; color: var(--apagado); font-size: .88rem; font-style: italic; }
+.respondidas + .respondidas { margin-top: 18px; border-top: 0; padding-top: 0; }

@@ -28,6 +28,15 @@
     if (n) alvo.classList.add('espera');
   }
 
+  // Os pedidos de livros feitos em /admin/sugestoes/ que o Claude ainda não viu.
+  async function contarPedidos(alvo) {
+    var r = await sb.schema('conta').from('respostas_privadas').select('item', { count: 'exact', head: true })
+      .eq('pagina', 'sugestoes').eq('decisao', 'escolher').eq('lida', false);
+    if (r.error || !r.count) return;
+    alvo.textContent = r.count === 1 ? '1 pedido novo' : r.count + ' pedidos novos';
+    alvo.hidden = false;
+  }
+
   function item(x) {
     var w = el('div', 'item'), href = seguro(x.href);
     var a = el(href ? 'a' : 'div', 'caminho');
@@ -37,6 +46,10 @@
     if (x.contar === 'pendencias') {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
       contarPendencias(c);
+    }
+    if (x.contar === 'sugestoes') {
+      var s = el('span', 'etiqueta'); s.hidden = true; nome.appendChild(s);
+      contarPedidos(s);
     }
     a.appendChild(nome);
     if (x.texto) a.appendChild(el('span', 'caminho-texto', x.texto));
