@@ -81,6 +81,15 @@
     }
   });
 
+  // o botão do Google só aparece onde há Client ID para este endereço (google.js)
+  if (TaioeGoogle.clientId()) {
+    H.mostrar('com-google', true);
+    H.$('google').addEventListener('click', function () {
+      this.disabled = true;
+      TaioeGoogle.ir().catch(function (e) { H.$('google').disabled = false; H.avisar('aviso-email', H.mensagemDeErro(e), 'erro'); });
+    });
+  }
+
   H.$('outro-email').addEventListener('click', function () { clearInterval(relogio); passo('passo-email'); });
 
   H.$('continuar').addEventListener('click', function () {
