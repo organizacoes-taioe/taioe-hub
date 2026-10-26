@@ -1,0 +1,21 @@
+/* /admin/pedidos/ (só o revisor geral): a fila única dos pedidos. Usa os tokens de /comum/estilo.css,
+   a barra e o cartão de /admin/pendencias/pendencias.css e as fichas de /admin/sugestoes/sugestoes.css. */
+.barra .titulo-barra { flex: 1 1 auto; font-size: 1.2rem; margin: 0; }
+.barra .ir-sugestoes { white-space: nowrap; font-size: .95rem; }
+.explica { color: var(--apagado); margin: 0 0 18px; }
+.pedidos h2 { font-size: 1.15rem; margin: 22px 0 6px; padding-bottom: 6px; border-bottom: 1px solid var(--borda); }
+.estado-ordem { color: var(--apagado); margin: 6px 0 0; min-height: 1.2em; }
+.estado-ordem.erro { color: var(--erro); }
+
+.fila { list-style: none; margin: 0; padding: 0; }
+.pedido h3 { display: flex; gap: 8px; align-items: baseline; font-size: 1.1rem; }
+.pedido .posicao { flex: none; min-width: 1.6em; color: var(--acento); font-weight: 700; }
+.pedido .ficha { margin: 0; }
+.pedido.novo { border-style: dashed; }
+.pedido.movido { border-color: var(--acento); }
+.mover { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.mover button { margin: 0; padding: 6px 14px; min-width: 44px; }
+.mover button[disabled] { opacity: .35; cursor: default; }
+@media (max-width: 600px) {
+  .barra .titulo-barra { font-size: 1.05rem; }
+}

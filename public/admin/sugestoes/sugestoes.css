@@ -20,6 +20,7 @@
 .depois textarea:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 
 .lista-fim { margin: 12px 0 0; padding-left: 1.4em; }
+.ir-fila { margin: 10px 0 0; }
 .lista-fim li { margin: .5em 0; }
 .lista-fim .ficha { font-size: .88rem; }
 .lista-fim .porque-dado { display: block; color: var(--apagado); font-size: .88rem; font-style: italic; }
