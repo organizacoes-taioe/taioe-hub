@@ -5,7 +5,7 @@
    conta.respostas_privadas (pagina 'sugestoes'; pedir = 'escolher', com texto 'pedir@<hora do
    clique>', que guarda a ordem dos pedidos; não quero = 'excluir') e fica no lugar até recarregar,
    para ele escrever o porquê ou desfazer. Depois vai para o fim da categoria, em «Pedidos» (o que
-   ele pediu, na ordem, até entrar no ar) ou em «Tirados da lista».
+   ele pediu, até entrar no ar, com a posição na fila única de /admin/pedidos/) ou em «Tirados da lista».
    Na revisão (rotinas/sugestoes.md), o Claude põe o pedido na fila de trabalho, tira o livro da
    lista, reordena o resto e marca a resposta como lida. A lista vem de conta.paginas_privadas
    (slug 'sugestoes', em dados/paginas/sugestoes.json do taioe-infra). */
@@ -200,17 +200,20 @@
     if (pedidos.length || novosPedidos.length) {
       var det = el('details', 'respondidas pedidos');
       det.appendChild(el('summary', null, 'Pedidos (' + (pedidos.length + novosPedidos.length) + ')'));
-      var ol = el('ol', 'lista-fim');
+      var pf = el('p', 'ir-fila pequeno'), af = el('a', null, 'Ver a fila de todos os pedidos e mudar a ordem');
+      af.href = '/admin/pedidos/'; pf.appendChild(af); det.appendChild(pf);
+      var pos = posicoesNaFila();
+      var ul = el('ul', 'lista-fim');
       pedidos.forEach(function (p) {
         var li = el('li');
         comItalico(li.appendChild(el('span', 'titulo-livro')), p.titulo);
         if (p.autor) li.appendChild(document.createTextNode(', ' + p.autor));
-        var s = [p.estado, p.desde ? 'pedido em ' + dia(p.desde) : ''].filter(Boolean).join(' · ');
+        var s = [TaioePedidos.emAndamento(p) ? p.estado : pos[p.id] ? 'nº ' + pos[p.id] + ' na fila' : '', p.desde ? 'pedido em ' + dia(p.desde) : ''].filter(Boolean).join(' · ');
         if (s) li.appendChild(el('span', 'ficha', ' · ' + s));
-        ol.appendChild(li);
+        ul.appendChild(li);
       });
-      novosPedidos.forEach(function (o) { ol.appendChild(itemNovo(cat, o)); });
-      det.appendChild(ol);
+      novosPedidos.forEach(function (o) { ul.appendChild(itemNovo(cat, o, pos[o.x.id])); });
+      det.appendChild(ul);
       raiz.appendChild(det);
     }
 
@@ -232,13 +235,20 @@
     }
   }
 
+  // A posição de cada pedido na fila única de /admin/pedidos/ (ordem.js): id → 1, 2, 3…
+  function posicoesNaFila() {
+    var pos = {};
+    TaioePedidos.montar(dados, respostas).fila.forEach(function (p, i) { pos[p.id] = i + 1; });
+    return pos;
+  }
+
   // Um pedido (ou uma recusa) que o Claude ainda não viu: dá para desfazer, e o livro volta à lista.
-  function itemNovo(cat, o) {
+  function itemNovo(cat, o, posicao) {
     var li = el('li', 'novo');
     comItalico(li.appendChild(el('span', 'titulo-livro')), o.x.titulo);
     if (o.x.autor) li.appendChild(document.createTextNode(', ' + o.x.autor));
     var data = o.r.decisao === 'excluir' ? o.r.atualizado_em : horaDoPedido(o.r);
-    li.appendChild(el('span', 'ficha', ' · em ' + quando(data) + ' · o Claude ainda não viu · '));
+    li.appendChild(el('span', 'ficha', (posicao ? ' · nº ' + posicao + ' na fila' : '') + ' · em ' + quando(data) + ' · o Claude ainda não viu · '));
     var b = el('button', 'ligacao pequeno', 'Desfazer'); b.type = 'button';
     b.addEventListener('click', async function () {
       b.disabled = true;

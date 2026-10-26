@@ -37,6 +37,15 @@
     alvo.hidden = false;
   }
 
+  // Quantos livros estão na fila única de /admin/pedidos/ (ordem.js), sem os em andamento.
+  async function contarFila(alvo) {
+    var n;
+    try { var c = await TaioePedidos.carregar(sb); n = TaioePedidos.montar(c.dados, c.respostas).fila.length; }
+    catch (e) { return; }
+    alvo.textContent = n === 1 ? '1 na fila' : n + ' na fila';
+    alvo.hidden = false;
+  }
+
   function item(x) {
     var w = el('div', 'item'), href = seguro(x.href);
     var a = el(href ? 'a' : 'div', 'caminho');
@@ -46,6 +55,10 @@
     if (x.contar === 'pendencias') {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
       contarPendencias(c);
+    }
+    if (x.contar === 'pedidos') {
+      var f = el('span', 'etiqueta'); f.hidden = true; nome.appendChild(f);
+      contarFila(f);
     }
     if (x.contar === 'sugestoes') {
       var s = el('span', 'etiqueta'); s.hidden = true; nome.appendChild(s);
