@@ -34,7 +34,10 @@
     if (/otp_expired|expired|invalid|token/i.test(m)) return t('erro.codigo');
     if (/email_address_invalid|invalid.*email/i.test(m)) return t('erro.email');
     if (/fetch|network|failed to/i.test(m)) return t('erro.rede');
-    return t('erro.geral');
+    // Erro desconhecido: o detalhe técnico vai junto, para a pessoa poder mandar a foto da tela.
+    if (window.console) console.error(erro);
+    var d = [st, erro && erro.code, erro && erro.message].filter(function (x) { return x; }).join(' · ');
+    return t('erro.geral') + (d ? ' (' + String(d).slice(0, 160) + ')' : '');
   }
 
   // A versão vigente de cada documento: a mais recente já publicada.
