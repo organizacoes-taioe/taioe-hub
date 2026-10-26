@@ -54,9 +54,13 @@
     return vig;                                            // { termos: {...}, politica: {...} }
   }
 
+  // O revisor geral lê os perfis de todo mundo (estatísticas): o filtro pela conta é obrigatório.
   async function lerPerfil() {
+    var sessao = await sessaoAtual();
+    if (!sessao) return null;
     var r = await TaioeSessao.cliente().schema('conta').from('perfis')
-      .select('nome, termos_versao, politica_versao, fora_da_calibragem, lingua_interface').maybeSingle();
+      .select('nome, termos_versao, politica_versao, fora_da_calibragem, lingua_interface')
+      .eq('usuario_id', sessao.user.id).maybeSingle();
     if (r.error) throw r.error;
     return r.data;
   }
