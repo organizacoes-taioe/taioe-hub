@@ -3,7 +3,7 @@
    - Comentários dos usuários dos Cards: os itens que o Claude marcou para ele (para_gere), com a
      pergunta do Claude na conversa (cards.conversa). Responder = mensagem dele depois da pergunta.
    - As páginas particulares de revisão (biblia, biblia-comentarios, nao-ficcao,
-     nao-ficcao-comentarios): o conteúdo vem de conta.paginas_privadas e as respostas de
+     nao-ficcao-comentarios, traducoes): o conteúdo vem de conta.paginas_privadas e as respostas de
      conta.respostas_privadas. Resposta já aplicada pelo Claude (lida) sai da fila.
    Pedido do Gere, 24/10/2026: um link só, um tipo de cada vez, e no fim da fila o que ele já
    respondeu e o Claude ainda não aplicou. */
@@ -15,7 +15,9 @@
     { id: 'biblia', rotulo: 'Bíblia: tradução' },
     { id: 'biblia-comentarios', rotulo: 'Bíblia: comentários dos Padres' },
     { id: 'nao-ficcao', rotulo: 'Não-ficção: tradução' },
-    { id: 'nao-ficcao-comentarios', rotulo: 'Não-ficção: comentários' }
+    { id: 'nao-ficcao-comentarios', rotulo: 'Não-ficção: comentários' },
+    // As decisões mais delicadas das traduções nossas da Biblioteca (pedido do Gere, 26/10/2026).
+    { id: 'traducoes', rotulo: 'Biblioteca: traduções' }
   ];
 
   // As respostas de uma página, em lotes de 1000 (o máximo que a API devolve de uma vez).
