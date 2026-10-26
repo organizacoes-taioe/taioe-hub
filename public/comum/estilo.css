@@ -187,5 +187,7 @@ body.inicio .lema { color: var(--apagado); margin: 0 auto 2.6rem; max-width: 22r
 .caminho.discreto { border-color: transparent; color: var(--acento); font-weight: 700; padding: 10px 20px; }
 .caminho.discreto:hover { border-color: var(--borda); background: transparent; }
 .caminho[hidden] { display: none; }
+/* início: sem sessão guardada, «Entrar»; com ela, «Minha conta» (comum/sessao-guardada.js) */
+html.com-sessao #entrar, html:not(.com-sessao) #conta { display: none; }
 body.inicio .ola { color: var(--apagado); margin: 1.2rem 0 0; font-size: .95rem; }
 body.inicio .rodape { justify-content: center; border-top: 0; }
