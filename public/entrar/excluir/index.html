@@ -29,9 +29,9 @@
   <section id="passo-confirmar" hidden>
     <h1 data-i18n="excluir.confirmar-h1">Confirmar a exclusão</h1>
     <form id="form-codigo" novalidate>
-      <label for="codigo" data-i18n="excluir.codigo">Código de 6 dígitos que chegou no seu email</label>
+      <label for="codigo" data-i18n="excluir.codigo">Código de 4 dígitos que chegou no seu email</label>
       <input type="text" id="codigo" class="codigo" inputmode="numeric" autocomplete="one-time-code"
-             pattern="[0-9]{6}" maxlength="6" required>
+             pattern="[0-9]{4}" maxlength="4" required>
       <label class="marcar"><input type="checkbox" id="certeza" required>
         <span data-i18n="excluir.certeza">Entendo que a conta e os dados serão apagados para sempre.</span></label>
       <button type="submit" class="perigo" id="excluir" data-i18n="excluir.botao">Excluir minha conta</button>
@@ -62,6 +62,7 @@
 <script src="/comum/vendor/supabase-js-2.117.2.js"></script>
 <script src="/comum/taioe-sessao.js"></script>
 <script src="/comum/hub.js"></script>
+<script src="/entrar/acesso.js"></script>
 <script src="/entrar/turnstile.js"></script>
 <script src="/entrar/excluir/excluir.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=taioeTurnstilePronto" async defer></script>
