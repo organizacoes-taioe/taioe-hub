@@ -132,6 +132,16 @@ button:disabled { opacity: .55; cursor: default; }
 
 #turnstile { margin-top: 14px; min-height: 0; }
 
+/* /entrar/: «Continuar com o Google», nas cores das regras de marca do Google (no escuro, fundo
+   escuro com borda cinza; no claro, fundo branco), com o «G» oficial servido pelo próprio site */
+.ou { color: var(--apagado); margin: 22px 0 0; }
+button.google { display: inline-flex; align-items: center; gap: 10px; background: #131314; color: #e3e3e3;
+  border: 1px solid #8e918f; font-weight: 600; }
+button.google img { flex: none; }
+@media (prefers-color-scheme: light) {
+  button.google { background: #fff; color: #1f1f1f; border-color: #747775; }
+}
+
 .texto-legal h2 { margin-top: 32px; }
 .texto-legal li { margin-bottom: 6px; }
 .rascunho { border: 2px dashed var(--erro); color: var(--erro); border-radius: 10px; padding: 10px 14px; font-weight: 700; }
