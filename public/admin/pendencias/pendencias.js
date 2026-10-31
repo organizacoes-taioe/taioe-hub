@@ -301,7 +301,7 @@
     var c;
     if (x.tipo === 'nota') c = itemNota(est, x);
     else if (x.tipo === 'escolha') c = itemEscolha(est, x);
-    else if (x.tipo === 'tema-titulo') c = itemTemaTexto(est, x, 'Título do tema');
+    else if (x.tipo === 'tema-titulo') c = itemTemaTexto(est, x, 'Nome do tema');
     else if (x.tipo === 'tema-resumo') c = itemTemaTexto(est, x, 'Texto do tema');
     else if (x.tipo === 'comentario') c = itemComentario(est, x);
     else if (x.tipo === 'comentario-aviso') c = itemAvisoCorte(est, x);
