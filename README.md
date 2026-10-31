@@ -48,6 +48,7 @@ Depois de mexer em textos ou telas: `node hub/ferramentas/teste-i18n.mjs` (chave
 |---|---|
 | `public/comum/vendor/supabase-js-2.117.2.js` (UMD do npm, integridade conferida) | `59d39487c3589843b410322d8a3d562ce022aba1e5ccb16898ef3fb2a0da2ecd` |
 | `public/comum/taioe-sessao.js` (contrato v1) | `a1f94e2ca73a7ee9aa5f8ec3a8dba939b1adaafe441d149896aa7bb2013942ca` |
+| `notas.js`, só na Bíblia e na Biblioteca (`public/biblia/js/`, `public/biblioteca/js/`; na Biblioteca a fonte é `ferramentas/site/comum/notas.js`), para as notas terem sempre a mesma dinâmica (31/10/2026) | `e1def09bd0ffd6d5c09624c375e5bfa39ff008ff845816fe2906fe98b41afef7` |
 
 Nos apps, as cópias ficam em `public/<app>/vendor/` e `public/<app>/js/`. O workflow **Cópias** de cada repositório confere estes valores; ao mudar um arquivo, mude o valor aqui e nos três workflows, no mesmo dia.
 
