@@ -192,7 +192,9 @@
     b.appendChild(el('p', 'apagado pequeno', 'Cada revisão de card dominado, pelo tempo que o card de fato esperou ' +
       'desde a resposta anterior. Desde 17/10 a volta de cada card é sorteada entre metade e o dobro do degrau; ' +
       'antes, ele voltava no degrau ou depois, quando a fila deixava. As respostas de antes de 06/10 vieram dos logs ' +
-      'do app antigo, sem o degrau: ele foi deduzido do tempo passado.'));
+      'do app antigo, sem o degrau: ele foi deduzido do tempo passado. Desde 01/11 o degrau de 1 semana espera de fato ' +
+      '5 dias (o sorteio vai de 2,5 a 10 dias), mas continua com o nome de 7 dias: no painel dele a espera segue ' +
+      'dividida por 7, e o meio do sorteio fica em 0,71×.'));
     [['meus', 'Sua conta'], ['todos', 'Todos (' + fmt(dados.pessoas) + (Number(dados.pessoas) === 1 ? ' pessoa)' : ' pessoas)')]].forEach(function (op) {
       var bt = el('button', 'secundario' + (op[0] === quem ? ' ativo' : ''), op[1]);
       bt.type = 'button';
