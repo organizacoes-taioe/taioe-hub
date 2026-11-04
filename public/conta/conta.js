@@ -57,7 +57,15 @@
     H.avisar('aviso-dados', t('conta.preparando'));
     var r = await sb.schema('conta').rpc('exportar_meus_dados');
     if (r.error) { H.avisar('aviso-dados', H.mensagemDeErro(r.error), 'erro'); return; }
-    var blob = new Blob([JSON.stringify(r.data, null, 2)], { type: 'application/json' });
+    // as formas de entrar (email, Google) vêm do Auth, que o banco não expõe à conta
+    var u = await sb.auth.getUser();
+    if (!u.error && u.data.user) {
+      r.data.identidades = (u.data.user.identities || []).map(function (i) {
+        return { provedor: i.provider, email: i.identity_data && i.identity_data.email,
+                 criada_em: i.created_at, ultimo_login: i.last_sign_in_at };
+      });
+    }
+    var blob =new Blob([JSON.stringify(r.data, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'taioe-meus-dados-' + new Date().toISOString().slice(0, 10) + '.json';

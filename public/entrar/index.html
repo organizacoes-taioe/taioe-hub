@@ -32,6 +32,11 @@
       <button type="submit" id="enviar" data-i18n="entrar.receber">Receber o código</button>
     </form>
     <div id="aviso-email" class="aviso" role="status" aria-live="polite"></div>
+    <div id="com-google" hidden>
+      <p class="ou" data-i18n="entrar.ou">ou</p>
+      <button type="button" class="google" id="google"><img src="/entrar/google-g.svg" alt="" width="20" height="20"><span data-i18n="entrar.google">Continuar com o Google</span></button>
+      <p class="pequeno apagado" data-i18n="entrar.google-explica">O Google usa o email da sua Conta Google. Se a sua conta na Taioé tem outro email, entre pelo código.</p>
+    </div>
   </section>
 
   <!-- passo 2: código -->
@@ -70,6 +75,7 @@
 <script src="/comum/taioe-sessao.js"></script>
 <script src="/comum/hub.js"></script>
 <script src="/entrar/turnstile.js"></script>
+<script src="/entrar/google.js"></script>
 <script src="/entrar/entrar.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=taioeTurnstilePronto" async defer></script>
 </body>

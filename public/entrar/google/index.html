@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title data-i18n="google.titulo">Entrar com o Google · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/">Taioé</a>
+</header>
+
+<main>
+  <h1 data-i18n="google.h1">Entrar com o Google</h1>
+  <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
+  <p id="de-novo" hidden><a class="botao" href="/entrar/" data-i18n="google.de-novo">Voltar a Entrar</a></p>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/" data-i18n="comum.privacidade">Privacidade</a>
+  <a href="/termos/" data-i18n="comum.termos">Termos de uso</a>
+  <a href="mailto:contato@taioe.com.br">contato@taioe.com.br</a>
+  <label class="lingua"><span class="so-leitor" data-i18n="comum.lingua">Língua</span>
+    <select data-seletor-lingua>
+      <option value="pt" lang="pt-BR">Português</option>
+      <option value="es" lang="es">Español</option>
+      <option value="en" lang="en">English</option>
+    </select></label>
+</footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/entrar/google.js"></script>
+<script src="/entrar/google/google-volta.js"></script>
+</body>
+</html>
