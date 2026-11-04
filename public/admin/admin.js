@@ -16,11 +16,12 @@
   // Só caminhos do próprio site ou https.
   function seguro(u) { return /^(\/(?!\/)|https:\/\/)/.test(u || '') ? u : ''; }
 
-  // Quantas pendências esperam o Gere, somando os tipos de /admin/pendencias/ (fila.js).
-  async function contarPendencias(alvo) {
+  // Quantos itens esperam o Gere numa das três páginas (pendências, comentários, notas), somando os
+  // tipos dela (fila.js).
+  async function contarPendencias(alvo, pagina) {
     var n = 0;
     try {
-      (await Promise.all(TaioeFila.TIPOS.map(function (t) { return TaioeFila.carregar(sb, t.id); })))
+      (await Promise.all(TaioeFila.tiposDa(pagina).map(function (t) { return TaioeFila.carregar(sb, t.id); })))
         .forEach(function (c) { n += TaioeFila.contar(c).faltam; });
     } catch (e) { return; }
     alvo.textContent = n ? (n === 1 ? '1 espera você' : n + ' esperam você') : 'nada esperando';
@@ -52,9 +53,9 @@
     if (href) a.href = href;
     var nome = el('span', 'caminho-nome', x.titulo);
     if (x.previa) nome.appendChild(el('span', 'etiqueta', 'prévia'));
-    if (x.contar === 'pendencias') {
+    if (TaioeFila.PAGINAS[x.contar]) {
       var c = el('span', 'etiqueta'); c.hidden = true; nome.appendChild(c);
-      contarPendencias(c);
+      contarPendencias(c, x.contar);
     }
     if (x.contar === 'pedidos') {
       var f = el('span', 'etiqueta'); f.hidden = true; nome.appendChild(f);
