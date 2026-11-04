@@ -7,9 +7,8 @@
    Herdou o script de /admin/biblia/ (17 a 23/10), que servia também à revisão dos comentários dos
    Padres e à Não-ficção: cada resposta grava sozinha, no clique ou logo depois de ele parar de
    digitar; sem «aprovar todos» e sem textos explicativos (19/10). Uma decisão por cartão (24/10).
-   Os comentários dos usuários dos Cards (antes só em /cards/curadoria/): o Claude responde os casos
-   em que está seguro e manda para cá os duvidosos, com o que decidir e a sugestão; a resposta dele
-   vai para cards.conversa, que o Claude lê na rodada seguinte (rotinas/pendencias.md). */
+   Os comentários dos usuários dos Cards estiveram aqui de 24/10 a 04/11/2026; desde então o Gere os
+   resolve pedindo direto ao Claude, na conversa (rotinas/retorno.md). */
 (function () {
   'use strict';
   var H = TaioeHub, F = TaioeFila, sb = TaioeSessao.cliente();
@@ -371,112 +370,12 @@
     });
   }
 
-  // ------------------------------------------------------------ comentários dos usuários
-
-  var NOME_ETAPA = { 'ida-escrita': 'ida, escrita', 'ida-escolha': 'ida, múltipla escolha', 'inversa-escrita': 'volta, escrita', 'inversa-escolha': 'volta, múltipla escolha' };
-
-  function cartaoUsuario(est, i) {
-    var c = el('article', 'cartao usuario pendencia');
-    var cab = el('p', 'cartao-ref', (i.tipo === 'comentario' ? 'Comentário' : 'Contestação') + ' · ' + i.curso + ' · ' +
-      new Date(i.feito_em).toLocaleDateString('pt-BR'));
-    c.appendChild(cab);
-    var p = F.lerPergunta(i.pergunta ? i.pergunta.texto : '');
-    c.appendChild(el('p', 'card-do-item', p.card || ('Card ' + i.card_id)));
-    if (i.tipo === 'comentario') {
-      c.appendChild(el('p', 'rotulo', 'O usuário escreveu'));
-      c.appendChild(paragrafos('cartao-texto citado', i.texto));
-    } else {
-      c.appendChild(el('p', 'rotulo', 'A resposta contestada' + (i.etapa ? ' (' + (NOME_ETAPA[i.etapa] || i.etapa) + ')' : '')));
-      var q = el('div', 'cartao-texto citado');
-      q.appendChild(el('p', null, i.resposta));
-      if (i.esperado) q.appendChild(el('p', 'apagado', 'O card esperava: ' + i.esperado));
-      c.appendChild(q);
-    }
-    var decidir = p.decidir || (!i.pergunta ? i.decisao : '');
-    if (decidir) {
-      c.appendChild(el('p', 'rotulo', 'Você precisa decidir'));
-      c.appendChild(paragrafos('cartao-texto decidir', decidir));
-    }
-    if (p.sugestao) {
-      c.appendChild(el('p', 'rotulo', 'Minha sugestão'));
-      c.appendChild(paragrafos('cartao-texto', p.sugestao));
-    }
-    c.appendChild(respostaUsuario(est, i, !!p.sugestao));
-    return c;
-  }
-
-  // «Seguir a sugestão» grava na hora; «Outra coisa» abre o campo e grava no «Enviar». Cada envio
-  // é uma mensagem nova na conversa do item (a conversa não se edita); vale a última.
-  var SEGUIR = 'Sigo a sugestão.';
-  function respostaUsuario(est, i, temSugestao) {
-    var f = el('form', 'resposta');
-    var nome = 'u-' + i.id;
-    var opcoes = el('div', 'opcoes');
-    function opcao(valor, rotulo) {
-      var l = el('label', 'opcao');
-      var r = el('input'); r.type = 'radio'; r.name = nome; r.value = valor;
-      l.appendChild(r); l.appendChild(el('span', 'opcao-texto', rotulo));
-      opcoes.appendChild(l);
-      return r;
-    }
-    var rSeguir = temSugestao ? opcao('seguir', 'Seguir a sugestão') : null;
-    var rOutra = opcao('outra', temSugestao ? 'Outra coisa' : 'Responder');
-    var campo = el('textarea', 'campo'); campo.rows = 3; campo.maxLength = 4000; campo.hidden = true;
-    campo.placeholder = 'O que você quer'; campo.setAttribute('aria-label', 'Sua resposta');
-    var enviar = el('button', 'enviar', 'Enviar'); enviar.type = 'submit'; enviar.hidden = true;
-    var estado = el('p', 'estado pequeno');
-    f.appendChild(opcoes); f.appendChild(campo); f.appendChild(enviar);
-    var pe = el('div', 'pe'); pe.appendChild(estado); f.appendChild(pe);
-
-    async function mandar(texto) {
-      estado.textContent = 'Gravando…';
-      enviar.disabled = true;
-      var r = await sb.schema('cards').from('conversa').insert({
-        item_tipo: i.tipo, item_id: i.id, tipo: i.pergunta ? 'resposta' : 'nota', texto: texto,
-        responde_a: i.pergunta ? i.pergunta.id : null
-      }).select().single();
-      enviar.disabled = false;
-      if (r.error) { estado.textContent = 'Não gravou: ' + H.mensagemDeErro(r.error) + ' (tente de novo)'; return; }
-      est.c.conversa.push(r.data);
-      F.situar(i, est.c.conversa);
-      atualizar();
-      resumir();
-    }
-    function mostrarCampo() { campo.hidden = enviar.hidden = !rOutra.checked; }
-    if (rSeguir) rSeguir.addEventListener('change', function () { mostrarCampo(); mandar(SEGUIR); });
-    rOutra.addEventListener('change', function () { mostrarCampo(); if (!campo.hidden) campo.focus(); });
-    f.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var t = campo.value.trim();
-      if (!t) { estado.textContent = 'Escreva a resposta para enviar.'; return; }
-      mandar(t);
-    });
-
-    function atualizar() {
-      var r = i.respostaGere;
-      f.classList.toggle('respondido', !!r);
-      if (f.parentNode) f.parentNode.classList.toggle('respondido', !!r);
-      if (!r) { estado.textContent = 'Ainda sem resposta.'; return; }
-      if (r.texto === SEGUIR && rSeguir) rSeguir.checked = true;
-      else { rOutra.checked = true; if (!campo.value) campo.value = r.texto; }
-      mostrarCampo();
-      estado.textContent = 'Gravado em ' + quando(r.criado_em) + ' · o Claude ainda não aplicou';
-    }
-    est.cartoes.push({ id: i.id, atualizar: atualizar });
-    return f;
-  }
-
-  function montarComentarios(est, fila, fim) {
-    est.c.itens.forEach(function (i) { (i.respostaGere ? fim : fila).appendChild(cartaoUsuario(est, i)); });
-  }
-
   // ------------------------------------------------------------ a fila de um tipo
 
   function montar(est) {
     var raiz = el('div', 'tipo'); raiz.setAttribute('data-tipo', est.tipo);
     var fila = el('div', 'fila'), fim = el('div', 'fila-fim');
-    if (est.tipo === 'comentarios') montarComentarios(est, fila, fim);
-    else montarPagina(est, fila, fim);
+    montarPagina(est, fila, fim);
     raiz.appendChild(fila);
     if (!fila.firstChild) fila.appendChild(el('p', 'vazio', 'Nada esperando você aqui.'));
     if (fim.firstChild) {
@@ -485,12 +384,6 @@
       det.appendChild(el('summary', null, (n === 1 ? '1 já respondida' : n + ' já respondidas') + ', esperando o Claude aplicar'));
       det.appendChild(fim);
       raiz.appendChild(det);
-    }
-    if (est.tipo === 'comentarios') {
-      var p = el('p', 'apagado pequeno historico');
-      p.appendChild(document.createTextNode('Todos os comentários e contestações, e a conversa geral com o Claude: '));
-      p.appendChild(link('/cards/curadoria/', 'curadoria dos Cards'));
-      raiz.appendChild(p);
     }
     est.cartoes.forEach(function (c) { c.atualizar(); });
     return raiz;
