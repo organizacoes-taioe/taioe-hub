@@ -27,7 +27,6 @@ main.revisao { max-width: 760px; padding-top: 0; }
 
 .respondidas { margin: 36px 0 20px; border-top: 2px solid var(--borda); padding-top: 14px; }
 .respondidas > summary { cursor: pointer; font-weight: 700; color: var(--apagado); }
-.historico { margin-top: 30px; }
 
 .cartao { background: var(--caixa); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; margin: 12px 0 14px; }
 .cartao h3 { font-size: 1.05rem; margin: 0 0 6px; }
@@ -41,12 +40,6 @@ main.revisao { max-width: 760px; padding-top: 0; }
 .aviso-corte .corte { color: var(--apagado); }
 .aviso-texto { border-left: 3px solid var(--acento); padding-left: 10px; margin: 8px 0; }
 .tema-texto .cartao-texto { font-size: 1.05rem; margin: 0 0 4px; }
-
-/* Comentário de usuário: o card, o que a pessoa disse, o que decidir e a sugestão. */
-.card-do-item { font-weight: 700; margin: 0 0 8px; }
-.usuario .rotulo { font-size: .82rem; font-weight: 700; color: var(--apagado); margin: 10px 0 4px; }
-.citado { border-left: 3px solid var(--borda); padding-left: 10px; }
-.decidir p { font-weight: 600; }
 
 .resposta { border-top: 1px dashed var(--borda); margin-top: 10px; padding-top: 10px; }
 .resposta.respondido { border-top-style: solid; border-top-color: var(--ok); }
