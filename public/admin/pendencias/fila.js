@@ -1,24 +1,36 @@
 /* As pendências do Gere (só o revisor geral): carregar e contar o que espera a resposta dele, por
-   tipo. Usado por /admin/pendencias/ (a fila) e por /admin/ (o total no link).
+   tipo. Usado por /admin/pendencias/, /admin/comentarios/ e /admin/notas/ (as filas) e por /admin/ (o total
+   em cada link).
    - Comentários dos usuários dos Cards: os itens que o Claude marcou para ele (para_gere), com a
      pergunta do Claude na conversa (cards.conversa). Responder = mensagem dele depois da pergunta.
    - As páginas particulares de revisão (biblia, biblia-comentarios, nao-ficcao,
-     nao-ficcao-comentarios, traducoes): o conteúdo vem de conta.paginas_privadas e as respostas de
+     nao-ficcao-comentarios, traducoes, notas): o conteúdo vem de conta.paginas_privadas e as respostas de
      conta.respostas_privadas. Resposta já aplicada pelo Claude (lida) sai da fila.
    Pedido do Gere, 24/10/2026: um link só, um tipo de cada vez, e no fim da fila o que ele já
    respondeu e o Claude ainda não aplicou. */
 (function () {
   'use strict';
 
+  // Três páginas (pedido do Gere, 04/11/2026): as pendências; os comentários dos Padres e dos
+  // autores, que são muitos e de trabalho mais lento; e as notas gerais da Biblioteca, em lotes.
+  var PAGINAS = {
+    pendencias: { href: '/admin/pendencias/', titulo: 'Pendências' },
+    comentarios: { href: '/admin/comentarios/', titulo: 'Comentários' },
+    notas: { href: '/admin/notas/', titulo: 'Notas' }
+  };
   var TIPOS = [
-    { id: 'comentarios', rotulo: 'Comentários dos usuários' },
-    { id: 'biblia', rotulo: 'Bíblia: tradução' },
-    { id: 'biblia-comentarios', rotulo: 'Bíblia: comentários dos Padres' },
-    { id: 'nao-ficcao', rotulo: 'Não-ficção: tradução' },
-    { id: 'nao-ficcao-comentarios', rotulo: 'Não-ficção: comentários' },
+    { id: 'comentarios', rotulo: 'Comentários dos usuários', pagina: 'pendencias' },
+    { id: 'biblia', rotulo: 'Bíblia: tradução', pagina: 'pendencias' },
+    { id: 'nao-ficcao', rotulo: 'Não-ficção: tradução', pagina: 'pendencias' },
     // As decisões mais delicadas das traduções nossas da Biblioteca (pedido do Gere, 26/10/2026).
-    { id: 'traducoes', rotulo: 'Biblioteca: traduções' }
+    { id: 'traducoes', rotulo: 'Biblioteca: traduções', pagina: 'pendencias' },
+    { id: 'biblia-comentarios', rotulo: 'Bíblia: comentários dos Padres', pagina: 'comentarios' },
+    { id: 'nao-ficcao-comentarios', rotulo: 'Não-ficção: comentários', pagina: 'comentarios' },
+    // As notas de contexto dos livros em português da Biblioteca, em lotes (pedido do Gere, 04/11/2026).
+    { id: 'notas', rotulo: 'Biblioteca: notas', pagina: 'notas' }
   ];
+  function tiposDa(pagina) { return TIPOS.filter(function (t) { return t.pagina === pagina; }); }
+  function paginaDe(tipo) { var t = TIPOS.filter(function (x) { return x.id === tipo; })[0]; return t ? t.pagina : ''; }
 
   // As respostas de uma página, em lotes de 1000 (o máximo que a API devolve de uma vez).
   async function respostasDe(sb, pagina) {
@@ -116,5 +128,5 @@
     return n;
   }
 
-  window.TaioeFila = { TIPOS: TIPOS, carregar: carregar, contar: contar, situar: situar, lerPergunta: lerPergunta };
+  window.TaioeFila = { TIPOS: TIPOS, PAGINAS: PAGINAS, tiposDa: tiposDa, paginaDe: paginaDe, carregar: carregar, contar: contar, situar: situar, lerPergunta: lerPergunta };
 })();

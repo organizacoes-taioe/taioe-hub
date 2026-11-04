@@ -13,7 +13,11 @@
 (function () {
   'use strict';
   var H = TaioeHub, F = TaioeFila, sb = TaioeSessao.cliente();
-  var CHAVE = 'hub:pendencias-tipo';
+  // A mesma página serve a /admin/pendencias/, /admin/comentarios/ e /admin/notas/ (04/11/2026):
+  // cada uma mostra só os seus tipos (main[data-pagina]).
+  var PAGINA = document.querySelector('main').getAttribute('data-pagina') || 'pendencias';
+  var TIPOS = F.tiposDa(PAGINA), TITULO = F.PAGINAS[PAGINA].titulo;
+  var CHAVE = PAGINA === 'pendencias' ? 'hub:pendencias-tipo' : 'hub:' + PAGINA + '-tipo';
   var estados = {};        // tipo → { tipo, c (o carregado), raiz, cartoes: [], pronto }
   var atual = null;
 
@@ -46,7 +50,7 @@
     var d = new Date(t);
     return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   }
-  function rotuloDe(tipo) { return F.TIPOS.filter(function (t) { return t.id === tipo; })[0].rotulo; }
+  function rotuloDe(tipo) { return TIPOS.filter(function (t) { return t.id === tipo; })[0].rotulo; }
 
   // ------------------------------------------------------------ gravar (páginas de revisão)
 
@@ -501,7 +505,7 @@
 
   function resumir() {
     var sel = H.$('tipo');
-    F.TIPOS.forEach(function (t, k) { sel.options[k].textContent = rotuloOpcao(t); });
+    TIPOS.forEach(function (t, k) { sel.options[k].textContent = rotuloOpcao(t); });
     var est = estados[atual], n = est && est.c ? F.contar(est.c) : null;
     H.$('faltam').textContent = !n ? '' : n.faltam ? (n.faltam === 1 ? 'Falta 1' : 'Faltam ' + n.faltam) : 'Tudo respondido';
     H.$('proxima').disabled = !n || !n.faltam;
@@ -542,7 +546,7 @@
     try { localStorage.setItem(CHAVE, tipo); } catch (e) {}
     if (location.hash !== '#' + tipo) history.replaceState(null, '', '#' + tipo);
     H.$('tipo').value = tipo;
-    document.title = 'Pendências: ' + rotuloDe(tipo) + ' · Taioé';
+    document.title = TITULO + ': ' + rotuloDe(tipo) + ' · Taioé';
     Array.prototype.forEach.call(H.$('tipos').children, function (r) { r.hidden = r.getAttribute('data-tipo') !== tipo; });
     var est = estados[tipo];
     H.avisar('aviso', '');
@@ -559,7 +563,12 @@
     window.scrollTo(0, 0);
   }
 
-  function tipoValido(t) { return F.TIPOS.some(function (x) { return x.id === t; }) ? t : ''; }
+  function tipoValido(t) { return TIPOS.some(function (x) { return x.id === t; }) ? t : ''; }
+
+  // Endereço antigo de um tipo que mudou de página (os comentários dos Padres, até 04/11/2026): vai
+  // para a página certa.
+  var outro = F.paginaDe(location.hash.slice(1));
+  if (outro && outro !== PAGINA) { location.replace(F.PAGINAS[outro].href + location.hash); return; }
 
   (async function () {
     var sessao = await H.sessaoAtual();
@@ -568,7 +577,7 @@
     if (pode.error || !pode.data) { H.mostrar('carregando', false); H.avisar('aviso', 'Esta página é só da administração da Taioé.', 'erro'); return; }
 
     var sel = H.$('tipo');
-    F.TIPOS.forEach(function (t) {
+    TIPOS.forEach(function (t) {
       estados[t.id] = { tipo: t.id, cartoes: [] };
       var o = el('option', null, t.rotulo); o.value = t.id; sel.appendChild(o);
     });
@@ -579,14 +588,14 @@
 
     // Todos os tipos carregam juntos (para as contagens do seletor). Abre no tipo do endereço; sem
     // ele, no último usado, se ainda tiver pendências; senão, no primeiro que tiver.
-    var todos = Promise.all(F.TIPOS.map(function (t) { return carregarTipo(t.id); }));
+    var todos = Promise.all(TIPOS.map(function (t) { return carregarTipo(t.id); }));
     var pedido = tipoValido(location.hash.slice(1)) || tipoValido(new URLSearchParams(location.search).get('tipo'));
     if (pedido) { mostrar(pedido); return; }
     await todos;
     var guardado = '';
     try { guardado = tipoValido(localStorage.getItem(CHAVE)); } catch (e) {}
     function faltam(t) { var e = estados[t]; return e.c ? F.contar(e.c).faltam : 0; }
-    var com = F.TIPOS.filter(function (t) { return faltam(t.id); })[0];
-    mostrar(guardado && faltam(guardado) ? guardado : com ? com.id : guardado || F.TIPOS[0].id);
+    var com = TIPOS.filter(function (t) { return faltam(t.id); })[0];
+    mostrar(guardado && faltam(guardado) ? guardado : com ? com.id : guardado || TIPOS[0].id);
   })();
 })();

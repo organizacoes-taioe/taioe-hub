@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Notas · Taioé</title>
+<link rel="stylesheet" href="/comum/estilo.css">
+<link rel="stylesheet" href="/admin/pendencias/pendencias.css">
+</head>
+<body>
+<header class="topo">
+  <a class="marca" href="/admin/">Administração</a>
+  <nav><a href="/conta/">Conta</a></nav>
+</header>
+
+<main class="revisao pendencias" data-pagina="notas">
+  <div class="barra" id="barra" hidden>
+    <a class="voltar" href="/admin/" aria-label="Voltar à Administração">← <span class="palavra">Administração</span></a>
+    <label class="escolher-tipo"><span class="so-leitor">Tipo de nota</span><select id="tipo"></select></label>
+    <span class="faltam" id="faltam" aria-live="polite"></span>
+    <button type="button" class="proxima" id="proxima" disabled>Próxima ↓</button>
+  </div>
+  <h1 class="so-leitor">Notas</h1>
+  <p id="carregando" class="apagado">Carregando…</p>
+  <div id="aviso" class="aviso erro" role="status"></div>
+  <div id="tipos"></div>
+</main>
+
+<footer class="rodape">
+  <a href="/privacidade/">Privacidade</a>
+  <a href="/termos/">Termos de uso</a>
+</footer>
+<script src="/comum/textos-i18n.js"></script>
+<script src="/comum/i18n.js"></script>
+<script src="/comum/vendor/supabase-js-2.117.2.js"></script>
+<script src="/comum/taioe-sessao.js"></script>
+<script src="/comum/hub.js"></script>
+<script src="/admin/pendencias/fila.js"></script>
+<script src="/admin/pendencias/pendencias.js"></script>
+</body>
+</html>
