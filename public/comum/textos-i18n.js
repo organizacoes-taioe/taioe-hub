@@ -31,7 +31,6 @@ window.TaioeTextos = {
     'erro.geral': 'Algo deu errado. Tente de novo em instantes.',
 
     'inicio.descricao': 'Taioé: cards para aprender línguas e uma biblioteca de clássicos em português, abertos a todos.',
-    'inicio.lema': 'Cards para aprender línguas e uma biblioteca de clássicos em português.',
     'inicio.apps': 'Aplicativos da Taioé',
     'inicio.cards': 'Espanhol e inglês, com repetição espaçada',
     'inicio.biblioteca-nome': 'Biblioteca Taioé',
@@ -163,7 +162,6 @@ window.TaioeTextos = {
     'erro.geral': 'Algo salió mal. Vuelve a intentarlo en unos instantes.',
 
     'inicio.descricao': 'Taioé: tarjetas para aprender idiomas y una biblioteca de clásicos en portugués, abiertas a todos.',
-    'inicio.lema': 'Tarjetas para aprender idiomas y una biblioteca de clásicos en portugués.',
     'inicio.apps': 'Aplicaciones de Taioé',
     'inicio.cards': 'Inglés y portugués, con repetición espaciada',
     'inicio.biblioteca-nome': 'Biblioteca Taioé',
@@ -295,7 +293,6 @@ window.TaioeTextos = {
     'erro.geral': 'Something went wrong. Please try again in a moment.',
 
     'inicio.descricao': 'Taioé: flashcards for learning languages and a library of classics in Portuguese, open to all.',
-    'inicio.lema': 'Flashcards for learning languages and a library of classics in Portuguese.',
     'inicio.apps': 'Taioé apps',
     'inicio.cards': 'Spanish and Portuguese, with spaced repetition',
     'inicio.biblioteca-nome': 'Biblioteca Taioé',
