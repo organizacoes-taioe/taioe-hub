@@ -58,7 +58,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   padding: 14px 20px;
   border-bottom: 1px solid var(--borda);
 }
-.marca { font-weight: 800; font-size: 1.25rem; color: var(--texto); text-decoration: none; letter-spacing: .01em; }
+.marca { display: inline-flex; align-items: center; font-size: 0; color: var(--texto); text-decoration: none; }
+/* A logo (logo/LOGO.md, a 14e): máscara pintada com a cor do texto, para valer nos dois temas.
+   O texto «Taioé» do link fica só para leitor de tela e buscador. */
+.marca::before, body.inicio .nome::before {
+  content: ""; display: block; aspect-ratio: 384 / 355; background: currentColor;
+  -webkit-mask: url("./taioe.svg") center / contain no-repeat; mask: url("./taioe.svg") center / contain no-repeat;
+}
+.marca::before { height: 36px; }
 .topo nav { display: flex; align-items: center; gap: 14px; font-size: .95rem; }
 .topo nav a { text-decoration: none; }
 
@@ -170,10 +177,8 @@ html.lingua-es .fora-do-pt, html.lingua-en .fora-do-pt { display: block; }
 
 /* ---- Página inicial: própria, simples, um caminho embaixo do outro ---- */
 body.inicio main.porta { max-width: 440px; text-align: center; padding: clamp(48px, 14vh, 140px) 24px 48px; }
-body.inicio .nome {
-  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  font-weight: 400; font-size: clamp(3rem, 13vw, 4.4rem); letter-spacing: .02em; line-height: 1; margin: 0 0 .35em;
-}
+body.inicio .nome { font-size: 0; line-height: 0; margin: 0 0 28px; }
+body.inicio .nome::before { height: clamp(120px, 34vw, 170px); margin: 0 auto; }
 body.inicio .lema { color: var(--apagado); margin: 0 auto 2.6rem; max-width: 22rem; }
 .caminhos { display: flex; flex-direction: column; gap: 12px; }
 .caminho {
