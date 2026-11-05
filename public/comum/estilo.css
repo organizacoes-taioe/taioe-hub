@@ -175,23 +175,69 @@ select.lingua-conta { display: block; padding: 10px 12px; margin-bottom: 10px; }
 .fora-do-pt { display: none; }
 html.lingua-es .fora-do-pt, html.lingua-en .fora-do-pt { display: block; }
 
-/* ---- Página inicial: própria, simples, um caminho embaixo do outro ---- */
-body.inicio main.porta { max-width: 440px; text-align: center; padding: clamp(48px, 14vh, 140px) 24px 48px; }
-body.inicio .nome { font-size: 0; line-height: 0; margin: 0 0 44px; }
+/* ---- Página inicial: a logo e uma porta por app, uma embaixo da outra (modelo: barca.cc).
+   Cada porta tem as cores e as letras do seu site, fixas nos dois temas; o fundo e a logo são
+   neutros (pedra e grafite), provisórios até o Gere escolher. Ao passar o cursor, nada sai do
+   lugar: só a ação ganha o sublinhado e a seta anda um pouco, dentro da porta. ---- */
+body.inicio { --pedra: #e7e3db; --logo: #3b3732; background: var(--pedra); }
+@media (prefers-color-scheme: dark) { body.inicio { --pedra: #24221f; --logo: #d9d3c7; } }
+body.inicio main.porta { max-width: 560px; text-align: center; padding: clamp(48px, 12vh, 120px) 16px 48px; }
+body.inicio .nome { font-size: 0; line-height: 0; margin: 0 0 48px; color: var(--logo); }
 body.inicio .nome::before { height: clamp(120px, 34vw, 170px); margin: 0 auto; }
-.caminhos { display: flex; flex-direction: column; gap: 12px; }
-.caminho {
-  display: block; text-decoration: none; color: var(--texto);
-  border: 1px solid var(--borda); border-radius: 12px; padding: 15px 20px;
-  transition: border-color .15s ease, background-color .15s ease;
+.caminhos { display: flex; flex-direction: column; gap: 18px; }
+.porta-app {
+  display: flex; flex-direction: column; justify-content: center; min-height: 260px;
+  padding: 34px 36px; text-align: left; text-decoration: none;
+  border: 5px solid var(--logo); border-radius: 18px;
 }
-.caminho:hover { border-color: var(--acento); background: var(--acento-fraco); }
-.caminho-nome { display: block; font-weight: 700; font-size: 1.1rem; }
-.caminho-texto { display: block; color: var(--apagado); font-size: .9rem; margin-top: 2px; }
-.caminho.discreto { border-color: transparent; color: var(--acento); font-weight: 700; padding: 10px 20px; }
-.caminho.discreto:hover { border-color: var(--borda); background: transparent; }
+.porta-nome, .porta-cat, .porta-texto, .porta-acao { display: block; }
+.porta-texto { text-wrap: balance; }
+.porta-acao { margin-top: auto; padding-top: 22px; }
+.porta-acao > span:first-child {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+  padding-bottom: 3px; transition: background-size .3s ease;
+}
+.porta-acao .seta { display: inline-block; margin-left: .4em; font-size: 1.3em; line-height: 0; vertical-align: -.08em; transition: transform .3s ease; }
+.porta-app:hover .porta-acao > span:first-child, .porta-app:focus-visible .porta-acao > span:first-child { background-size: 100% 2px; }
+.porta-app:hover .seta, .porta-app:focus-visible .seta { transform: translateX(6px); }
+@media (prefers-reduced-motion: reduce) { .porta-acao > span:first-child, .porta-acao .seta { transition: none; } }
+@media (max-width: 480px) { .porta-app { min-height: 240px; padding: 28px 26px; } }
+
+/* Taioé Cards: verde-noite, âmbar e Nunito (cards/public/cards/style.css) */
+.porta-cards { background: #0d1614; color: #e4ebe8; }
+.porta-cards .porta-nome { font-weight: 800; font-size: 1.75rem; line-height: 1.2; }
+.porta-cards .porta-nome b { color: #e8b93f; }
+.porta-cards .porta-cat { font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8ba39d; margin: 4px 0 16px; }
+.porta-cards .porta-texto {
+  align-self: flex-start; background: #16211f; border: 1px solid #25352f; border-radius: 15px;
+  padding: 10px 16px; font-size: 1.05rem;
+}
+.porta-cards .porta-acao { color: #e8b93f; font-weight: 800; }
+
+/* Biblioteca e Bíblia: papel e tinta, serifa e o vermelho-terra (biblioteca/ferramentas/site/estilo.css) */
+.porta-biblioteca, .porta-biblia {
+  background: #fbf8f2; color: #25221d;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+}
+.porta-biblioteca .porta-nome, .porta-biblia .porta-nome { font-size: 2rem; line-height: 1.2; }
+.porta-biblioteca .porta-cat, .porta-biblia .porta-cat, .porta-biblioteca .porta-acao, .porta-biblia .porta-acao {
+  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: .74rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+}
+.porta-biblioteca .porta-cat, .porta-biblia .porta-cat { color: #8b8377; margin: 8px 0 16px; }
+.porta-biblioteca .porta-texto, .porta-biblia .porta-texto { font-size: 1.12rem; line-height: 1.45; color: #57514a; }
+.porta-biblioteca .porta-texto { font-style: italic; }
+.porta-biblioteca .porta-acao, .porta-biblia .porta-acao { color: #8a3b2e; font-size: .8rem; }
+/* a Bíblia: título ao centro e o fio vermelho no alto, como no site com uma leitura aberta */
+.porta-biblia { text-align: center; box-shadow: inset 0 4px 0 #8a3b2e; }
+.porta-biblia .porta-acao { align-self: center; }
+
+/* «Entrar» ou «Minha conta», discreto, embaixo das portas */
+.caminho.discreto { display: block; text-decoration: none; color: var(--logo); font-weight: 700; padding: 10px 20px; border-radius: 12px; }
+.caminho.discreto:hover { text-decoration: underline; text-underline-offset: 4px; }
 .caminho[hidden] { display: none; }
+
 /* início: sem sessão guardada, «Entrar»; com ela, «Minha conta» (comum/sessao-guardada.js) */
 html.com-sessao #entrar, html:not(.com-sessao) #conta { display: none; }
-body.inicio .ola { color: var(--apagado); margin: 1.2rem 0 0; font-size: .95rem; }
+body.inicio .ola { color: var(--logo); margin: 1.2rem 0 0; font-size: .95rem; }
 body.inicio .rodape { justify-content: center; border-top: 0; }

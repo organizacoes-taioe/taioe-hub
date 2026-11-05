@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taioé</title>
-<meta name="description" data-i18n-attr="content:inicio.descricao" content="Taioé: cards para aprender línguas e uma biblioteca de clássicos em português, abertos a todos.">
+<meta name="description" data-i18n-attr="content:inicio.descricao" content="Taioé: cards para aprender línguas, uma biblioteca de clássicos em português e a Bíblia com notas e comentários.">
 <link rel="stylesheet" href="/comum/estilo.css">
 <script src="/comum/sessao-guardada.js"></script>
 </head>
@@ -13,13 +13,23 @@
   <h1 class="nome">Taioé</h1>
 
   <nav class="caminhos" aria-label="Aplicativos da Taioé" data-i18n-attr="aria-label:inicio.apps">
-    <a class="caminho" href="/cards/">
-      <span class="caminho-nome">Taioé Cards</span>
-      <span class="caminho-texto" data-i18n="inicio.cards">Espanhol e inglês, com repetição espaçada</span>
+    <a class="porta-app porta-cards" href="/cards/">
+      <span class="porta-nome">Taioé <b>Cards</b></span>
+      <span class="porta-cat" data-i18n="inicio.cards-cat">Línguas</span>
+      <span class="porta-texto" data-i18n="inicio.cards">Espanhol, inglês, francês e latim</span>
+      <span class="porta-acao"><span data-i18n="inicio.cards-acao">Estudar</span><span class="seta" aria-hidden="true">→</span></span>
     </a>
-    <a class="caminho" href="/biblioteca/">
-      <span class="caminho-nome" data-i18n="inicio.biblioteca-nome">Biblioteca Taioé</span>
-      <span class="caminho-texto" data-i18n="inicio.biblioteca">Clássicos em português, abertos a todos</span>
+    <a class="porta-app porta-biblioteca" href="/biblioteca/">
+      <span class="porta-nome" data-i18n="inicio.biblioteca-nome">Biblioteca Taioé</span>
+      <span class="porta-cat" data-i18n="inicio.biblioteca-cat">Textos em domínio público</span>
+      <span class="porta-texto" data-i18n="inicio.biblioteca">Literatura, catolicismo e não-ficção</span>
+      <span class="porta-acao"><span data-i18n="inicio.biblioteca-acao">Ler</span><span class="seta" aria-hidden="true">→</span></span>
+    </a>
+    <a class="porta-app porta-biblia" href="/biblia/">
+      <span class="porta-nome" data-i18n="inicio.biblia-nome">Bíblia Taioé</span>
+      <span class="porta-cat" data-i18n="inicio.biblia-cat">Sagrada Escritura</span>
+      <span class="porta-texto" data-i18n="inicio.biblia">Texto bíblico com notas e comentários dos Padres e dos Santos</span>
+      <span class="porta-acao"><span data-i18n="inicio.biblia-acao">Abrir</span><span class="seta" aria-hidden="true">→</span></span>
     </a>
     <a class="caminho discreto" id="entrar" href="/entrar/" data-i18n="comum.entrar">Entrar</a>
     <a class="caminho discreto" id="conta" href="/conta/" data-i18n="comum.minha-conta">Minha conta</a>

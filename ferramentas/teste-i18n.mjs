@@ -16,7 +16,7 @@ import vm from 'node:vm';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const LINGUAS = ['pt', 'es', 'en'];
 const PREFIXOS = /^(comum|erro|inicio|p404|entrar|cadastro|confirmar|excluir|conta|legal)\./;
-const LIVRES = new Set(['Taioé', 'Taioé Cards', 'contato@taioe.com.br', 'Português', 'Español', 'English', '·']);
+const LIVRES = new Set(['Taioé', 'Taioé Cards', 'Cards', 'contato@taioe.com.br', 'Português', 'Español', 'English', '·']);
 const VAZIOS = new Set(['meta', 'link', 'input', 'br', 'img', 'hr', 'source', 'wbr']);
 const ATRIBUTOS = ['aria-label', 'title', 'placeholder', 'alt'];
 // strings do JS que não aparecem para a pessoa
