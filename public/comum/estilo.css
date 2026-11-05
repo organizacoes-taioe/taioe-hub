@@ -177,9 +177,8 @@ html.lingua-es .fora-do-pt, html.lingua-en .fora-do-pt { display: block; }
 
 /* ---- Página inicial: própria, simples, um caminho embaixo do outro ---- */
 body.inicio main.porta { max-width: 440px; text-align: center; padding: clamp(48px, 14vh, 140px) 24px 48px; }
-body.inicio .nome { font-size: 0; line-height: 0; margin: 0 0 28px; }
+body.inicio .nome { font-size: 0; line-height: 0; margin: 0 0 44px; }
 body.inicio .nome::before { height: clamp(120px, 34vw, 170px); margin: 0 auto; }
-body.inicio .lema { color: var(--apagado); margin: 0 auto 2.6rem; max-width: 22rem; }
 .caminhos { display: flex; flex-direction: column; gap: 12px; }
 .caminho {
   display: block; text-decoration: none; color: var(--texto);
