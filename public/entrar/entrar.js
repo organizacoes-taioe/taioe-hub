@@ -1,5 +1,6 @@
-/* /entrar/: email → código → depoisDoLogin(). Formulário único «entrar ou criar conta»: a
-   resposta é a mesma para email novo ou antigo, para ninguém descobrir quem tem conta. */
+/* /entrar/: email → código de 4 dígitos (função acesso, /entrar/acesso.js) → depoisDoLogin().
+   Formulário único «entrar ou criar conta»: a resposta é a mesma para email novo ou antigo, para
+   ninguém descobrir quem tem conta. */
 (function () {
   'use strict';
   var H = TaioeHub, I = TaioeI18n, t = I.t, sb = TaioeSessao.cliente(), email = '', relogio = null;
@@ -29,9 +30,13 @@
     H.avisar(avisoId, t('comum.robo'));
     var captchaToken = await TaioeTurnstile.token();
     H.avisar(avisoId, t('comum.enviando'));
-    var r = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, captchaToken: captchaToken } });
-    TaioeTurnstile.reiniciar();
-    if (r.error) { H.avisar(avisoId, H.mensagemDeErro(r.error), 'erro'); return false; }
+    try {
+      var r = await TaioeAcesso.pedir(email, captchaToken);
+      if (!r || !r.ok) { H.avisar(avisoId, TaioeAcesso.mensagem(r), 'erro'); return false; }
+    } catch (e) {
+      H.avisar(avisoId, H.mensagemDeErro(e), 'erro');
+      return false;
+    } finally { TaioeTurnstile.reiniciar(); }
     H.avisar(avisoId, '');
     return true;
   }
@@ -55,12 +60,17 @@
   H.$('form-codigo').addEventListener('submit', async function (ev) {
     ev.preventDefault();
     var token = H.$('codigo').value.replace(/\D/g, '');
-    if (token.length !== 6) { H.avisar('aviso-codigo', t('comum.codigo-6'), 'erro'); return; }
+    if (token.length !== 4) { H.avisar('aviso-codigo', t('comum.codigo-4'), 'erro'); return; }
     H.$('verificar').disabled = true;
     H.avisar('aviso-codigo', t('comum.conferindo'));
     try {
-      var r = await sb.auth.verifyOtp({ email: email, token: token, type: 'email' });
-      if (r.error) { H.avisar('aviso-codigo', H.mensagemDeErro(r.error), 'erro'); return; }
+      var r = await TaioeAcesso.verificar(email, token);
+      if (!r || !r.ok) {
+        H.avisar('aviso-codigo', TaioeAcesso.mensagem(r), 'erro');
+        H.$('codigo').value = '';
+        return;
+      }
+      await TaioeAcesso.entrar(r);
       H.avisar('aviso-codigo', t('entrar.pronto'), 'ok');
       await H.depoisDoLogin();
     } catch (e) {
@@ -69,9 +79,9 @@
   });
 
   H.$('codigo').addEventListener('input', function () {
-    var v = this.value.replace(/\D/g, '').slice(0, 6);
+    var v = this.value.replace(/\D/g, '').slice(0, 4);
     if (v !== this.value) this.value = v;
-    if (v.length === 6) H.$('form-codigo').requestSubmit();
+    if (v.length === 4) H.$('form-codigo').requestSubmit();
   });
 
   H.$('reenviar').addEventListener('click', async function () {
