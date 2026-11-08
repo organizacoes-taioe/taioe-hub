@@ -37,11 +37,11 @@
   <!-- passo 2: código -->
   <section id="passo-codigo" hidden>
     <h1 data-i18n="entrar.codigo-h1">Digite o código</h1>
-    <p id="para-email" data-i18n-html="entrar.codigo-explica">Se o endereço <strong></strong> for válido, ele recebeu um email com um código de 6 dígitos e um botão. Os dois valem por 15 minutos.</p>
+    <p id="para-email" data-i18n-html="entrar.codigo-explica">Se o endereço <strong></strong> for válido, ele recebeu um email com um código de 4 dígitos e um botão. Os dois valem por 15 minutos.</p>
     <form id="form-codigo" novalidate>
       <label for="codigo" data-i18n="entrar.codigo">Código</label>
       <input type="text" id="codigo" class="codigo" inputmode="numeric" autocomplete="one-time-code"
-             pattern="[0-9]{6}" maxlength="6" required>
+             pattern="[0-9]{4}" maxlength="4" required>
       <button type="submit" id="verificar" data-i18n="comum.entrar">Entrar</button>
     </form>
     <div id="aviso-codigo" class="aviso" role="status" aria-live="polite"></div>
@@ -69,6 +69,7 @@
 <script src="/comum/vendor/supabase-js-2.117.2.js"></script>
 <script src="/comum/taioe-sessao.js"></script>
 <script src="/comum/hub.js"></script>
+<script src="/entrar/acesso.js"></script>
 <script src="/entrar/turnstile.js"></script>
 <script src="/entrar/entrar.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=taioeTurnstilePronto" async defer></script>
