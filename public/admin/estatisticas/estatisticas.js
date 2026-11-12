@@ -123,8 +123,10 @@
     if (d < 365) return Math.round(d / 30) + ' meses';
     return Math.round(d / 365 * 10) / 10 + ' anos';
   }
-  function rotuloDegrau(d) {
-    return ['3 dias', '1 semana', '2 semanas', '1 mês', '3 meses', '6 meses'][d];
+  /* O nome do degrau é a espera nominal dele (vem de conta.retornos(), «dias»). */
+  var NOMES_DIAS = { 3: '3 dias', 4: '4 dias', 7: '1 semana', 14: '2 semanas', 30: '1 mês', 90: '3 meses', 180: '6 meses' };
+  function rotuloDegrau(d, dias) {
+    return NOMES_DIAS[dias[d]] || (dias[d] + ' dias');
   }
 
   /* Agrupa em faixas: «chave» devolve o índice da faixa de cada linha. */
@@ -185,19 +187,63 @@
       b.appendChild(el('p', 'vazio', 'Os retornos ainda não estão no banco deste ambiente.'));
       return;
     }
-    var dias = dados.dias || [3, 7, 14, 30, 90, 180];
+    /* As línguas vivas e as mortas têm escadas diferentes. As chaves de hoje (dias, todos, meus,
+       pessoas) são das vivas; a chave «mortas» tem a mesma forma. Sem ela (servidor ainda sem a
+       migração), só as vivas, sem a escolha. */
+    var temMortas = !!(dados.mortas && typeof dados.mortas === 'object');
+    var familia = 'vivas';
+    try {
+      if (temMortas && localStorage.getItem('hub:estatisticas-escada') === 'mortas') familia = 'mortas';
+    } catch (e) { /* sem armazenamento: segue nas vivas */ }
+    var fonte = dados, dias = dados.dias || [3, 7, 14, 30, 90, 180];
     var quem = 'meus';
     var observador = null;
+    var escolhaFamilia = el('div', 'escolha');
     var controle = el('div', 'escolha');
+    var nota = el('p', 'apagado pequeno');
     var corpo = el('div');
-    b.appendChild(el('p', 'apagado pequeno', 'Cada revisão de card dominado, pelo tempo que o card de fato esperou ' +
-      'desde a resposta anterior. Desde 17/10 a volta de cada card é sorteada entre metade e o dobro do degrau; ' +
-      'antes, ele voltava no degrau ou depois, quando a fila deixava. As respostas de antes de 06/10 vieram dos logs ' +
-      'do app antigo, sem o degrau: ele foi deduzido do tempo passado. Desde 01/11 o degrau de 1 semana espera de fato ' +
-      '5 dias (o sorteio vai de 2,5 a 10 dias), mas continua com o nome de 7 dias: no painel dele a espera segue ' +
-      'dividida por 7, e o meio do sorteio fica em 0,71×.'));
-    [['meus', 'Sua conta'], ['todos', 'Todos (' + fmt(dados.pessoas) + (Number(dados.pessoas) === 1 ? ' pessoa)' : ' pessoas)')]].forEach(function (op) {
+    function escolherFamilia() {
+      fonte = familia === 'mortas' ? dados.mortas : dados;
+      dias = fonte.dias || (familia === 'mortas' ? [3, 4, 7, 14, 30, 90, 180] : [3, 7, 14, 30, 90, 180]);
+      nota.textContent = 'Cada revisão de card dominado, pelo tempo que o card de fato esperou ' +
+        'desde a resposta anterior. Desde 17/10 a volta de cada card é sorteada entre metade e o dobro do degrau; ' +
+        'antes, ele voltava no degrau ou depois, quando a fila deixava. As respostas de antes de 06/10 vieram dos logs ' +
+        'do app antigo, sem o degrau: ele foi deduzido do tempo passado.' +
+        (familia === 'mortas'
+          ? ' Línguas mortas (latim): escada própria de 7 degraus, com o nome igual à espera de fato, desde 11/11. ' +
+            'O histórico de antes foi remarcado pela espera antiga (o que era «1 semana» continua em «1 semana», e assim por ' +
+            'diante); o degrau de 4 dias começa vazio, e os cards já dominados mantiveram a volta marcada.'
+          : ' Desde 01/11 o degrau de 1 semana espera de fato 5 dias (o sorteio vai de 2,5 a 10 dias), mas continua ' +
+            'com o nome de 7 dias: no painel dele a espera segue dividida por 7, e o meio do sorteio fica em 0,71×.');
+    }
+    escolherFamilia();
+    b.appendChild(nota);
+    if (temMortas) {
+      [['vivas', 'Línguas vivas'], ['mortas', 'Línguas mortas']].forEach(function (op) {
+        var bt = el('button', 'secundario' + (op[0] === familia ? ' ativo' : ''), op[1]);
+        bt.type = 'button';
+        bt.setAttribute('aria-pressed', op[0] === familia ? 'true' : 'false');
+        bt.addEventListener('click', function () {
+          familia = op[0];
+          try { localStorage.setItem('hub:estatisticas-escada', familia); } catch (e) { /* tudo bem */ }
+          Array.prototype.forEach.call(escolhaFamilia.children, function (x) {
+            x.classList.toggle('ativo', x === bt); x.setAttribute('aria-pressed', x === bt ? 'true' : 'false');
+          });
+          escolherFamilia();
+          atualizarPessoas();
+          montar();
+        });
+        escolhaFamilia.appendChild(bt);
+      });
+      b.appendChild(escolhaFamilia);
+    }
+    var btTodos = null;
+    function atualizarPessoas() {
+      if (btTodos) btTodos.textContent = 'Todos (' + fmt(fonte.pessoas) + (Number(fonte.pessoas) === 1 ? ' pessoa)' : ' pessoas)');
+    }
+    [['meus', 'Sua conta'], ['todos', 'Todos']].forEach(function (op) {
       var bt = el('button', 'secundario' + (op[0] === quem ? ' ativo' : ''), op[1]);
+      if (op[0] === 'todos') btTodos = bt;
       bt.type = 'button';
       bt.setAttribute('aria-pressed', op[0] === quem ? 'true' : 'false');
       bt.addEventListener('click', function () {
@@ -209,12 +255,13 @@
       });
       controle.appendChild(bt);
     });
+    atualizarPessoas();
     b.appendChild(controle);
     b.appendChild(corpo);
 
     function montar() {
       corpo.textContent = '';
-      var linhas = (dados[quem] || []).map(function (r) {
+      var linhas = (fonte[quem] || []).map(function (r) {
         return { degrau: r[0], inferido: r[1], previsto: r[2], dias: r[3], n: Number(r[4]), ok: Number(r[5]) };
       });
       var total = linhas.reduce(function (s, l) { return s + l.n; }, 0);
@@ -244,7 +291,7 @@
       var desenho1 = function () {
         area1.textContent = '';
         pontosLog(area1, { titulo: 'Acerto pelo tempo de espera', xmin: 1, xmax: 400, piso: piso, alvo: 0.9, pontos: pts,
-          marcas: dias.map(function (d, i) { return { x: d, rotulo: rotuloDegrau(i), forte: true }; }) });
+          marcas: dias.map(function (d, i) { return { x: d, rotulo: rotuloDegrau(i, dias), forte: true }; }) });
       };
       desenho1();
       g1.appendChild(el('p', 'legenda', 'Ponto: o acerto da faixa; traço: a margem de 95%; ponto apagado: menos de ' +
@@ -259,7 +306,7 @@
         var doDegrau = linhas.filter(function (l) { return l.degrau === i; });
         var n = doDegrau.reduce(function (s, l) { return s + l.n; }, 0);
         var g = el('div', 'grafico');
-        g.appendChild(el('p', 'titulo', rotuloDegrau(i) + ' · ' + fmt(n) + ' revisões'));
+        g.appendChild(el('p', 'titulo', rotuloDegrau(i, dias) + ' · ' + fmt(n) + ' revisões'));
         multiplos.appendChild(g);
         if (!n) { g.appendChild(el('p', 'vazio', 'Sem revisões ainda.')); return; }
         var area = el('div', 'area');
@@ -277,7 +324,7 @@
         });
         var desenho = function () {
           area.textContent = '';
-          pontosLog(area, { titulo: 'Acerto no degrau de ' + rotuloDegrau(i), xmin: 0.35, xmax: 4, piso: piso, alvo: 0.9,
+          pontosLog(area, { titulo: 'Acerto no degrau de ' + rotuloDegrau(i, dias), xmin: 0.35, xmax: 4, piso: piso, alvo: 0.9,
             altura: 170, pontos: pp,
             marcas: [{ x: 0.5, rotulo: '½×' }, { x: 1, rotulo: '1×', forte: true }, { x: 2, rotulo: '2×' }] });
         };
@@ -287,7 +334,7 @@
 
       corpo.appendChild(el('h3', null, 'Os números'));
       corpo.appendChild(tabela(
-        [{ t: 'Degrau', f: function (x) { return rotuloDegrau(x.i); } },
+        [{ t: 'Degrau', f: function (x) { return rotuloDegrau(x.i, dias); } },
          { t: 'Revisões', n: 1, f: function (x) { return fmt(x.n); } },
          { t: 'Acerto', n: 1, f: function (x) { return x.n ? pct(x.ok / x.n) : '—'; } },
          { t: 'Antes do degrau', n: 1, f: function (x) { return x.an ? pct(x.aok / x.an) + ' de ' + fmt(x.an) : '—'; } },
