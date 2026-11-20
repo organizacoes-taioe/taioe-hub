@@ -10,7 +10,7 @@
     'pt-es': 'Português (para quem fala espanhol)', 'pt-en': 'Português (para quem fala inglês)',
     'fr-pt': 'Francês (para quem fala português)', 'fr-es': 'Francês (para quem fala espanhol)',
     'fr-en': 'Francês (para quem fala inglês)', 'la-pt': 'Latim (para quem fala português)',
-    'it-pt': 'Italiano (para quem fala português)' };
+    'it-pt': 'Italiano (para quem fala português)', 'pc-pt': 'Palavras raras do português' };
   var NOME_APP = { hub: 'Página inicial e conta', cards: 'Cards', biblioteca: 'Biblioteca' };
   var NOME_LINGUA = { pt: 'português', es: 'espanhol', en: 'inglês' };
 
